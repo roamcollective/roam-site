@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roam Prints Studio — Made to order</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#E8E4DB;--paper-2:#DEDACF;--card:#EFECE4;
+    --ink:#16140F;--ink-soft:#5A554A;
+    --orange:#FF5A1E;--orange-deep:#DC4309;--silver:#9C988E;
+    --line:rgba(22,20,15,0.16);--line-soft:rgba(22,20,15,0.10);
+    --display:'Bricolage Grotesque',sans-serif;--body:'Hanken Grotesk',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  ::selection{background:var(--orange);color:#16140F}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 32px}
+  .kicker{font-size:12px;letter-spacing:0.22em;text-transform:uppercase;font-weight:600;color:var(--ink-soft)}
+
+  /* NAV */
+  .nav{position:sticky;top:0;z-index:60;background:var(--paper);border-bottom:1px solid var(--line)}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:72px}
+  .logo{display:flex;align-items:center;gap:12px;font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:-0.01em}
+  .logo .sq{width:14px;height:14px;background:var(--orange);display:inline-block}
+  .pill{font-family:var(--body);font-weight:600;font-size:14px;background:var(--ink);color:var(--paper);padding:11px 20px;border:1px solid var(--ink);transition:background .18s,color .18s;cursor:pointer}
+  .pill:hover{background:transparent;color:var(--ink)}
+  .pill.orange{background:var(--orange);border-color:var(--orange);color:#16140F}
+  .pill.orange:hover{background:var(--orange-deep);border-color:var(--orange-deep);color:#16140F}
+  .pill.line{background:transparent;border:1px solid rgba(232,228,219,0.4);color:var(--paper)}
+  .pill.line:hover{background:var(--orange);border-color:var(--orange);color:#16140F}
+
+  /* CATEGORY STRIP */
+  .catbar{position:sticky;top:72px;z-index:55;background:var(--paper-2);border-bottom:1px solid var(--line)}
+  .catbar-in{display:flex;align-items:center;gap:26px;height:52px;overflow-x:auto;scrollbar-width:none}
+  .catbar-in::-webkit-scrollbar{display:none}
+  .catbar-label{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;color:var(--ink-soft);white-space:nowrap;flex-shrink:0}
+  .catbar-links{display:flex;gap:26px;white-space:nowrap}
+  .catbar-links a{font-size:14.5px;font-weight:600;color:var(--ink);opacity:.7;padding:5px 0;border-bottom:2px solid transparent;transition:opacity .15s,border-color .15s}
+  .catbar-links a:hover{opacity:1}
+  .catbar-links a.on{opacity:1;border-bottom-color:var(--orange)}
+
+  /* HERO (home) */
+  .hero{padding:74px 0 70px}
+  .hero-grid{display:grid;grid-template-columns:1.35fr 0.85fr;gap:56px;align-items:end}
+  .hero h1{font-family:var(--display);font-weight:800;font-size:clamp(60px,10.5vw,150px);line-height:0.86;letter-spacing:-0.035em;margin:20px 0 0}
+  .hero h1 .mark{position:relative;white-space:nowrap}
+  .hero h1 .mark::after{content:"";position:absolute;left:-2px;right:-2px;bottom:0.09em;height:0.26em;background:var(--orange);z-index:-1}
+  .hero-lede{margin-top:34px;max-width:480px;font-size:18.5px;color:var(--ink-soft)}
+  .hero-cta{margin-top:34px;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+  .text-link{font-weight:600;display:inline-flex;align-items:center;gap:8px;border-bottom:2px solid var(--ink);padding-bottom:3px}
+  .text-link:hover{color:var(--orange-deep);border-color:var(--orange)}
+  .hero-meta{margin-top:54px;display:flex;gap:30px;flex-wrap:wrap;font-size:13px;font-weight:600;letter-spacing:0.04em;color:var(--ink-soft);text-transform:uppercase}
+  .hero-meta span{display:flex;align-items:center;gap:30px}
+  .hero-meta span::after{content:"";width:5px;height:5px;background:var(--orange);border-radius:50%}
+  .hero-meta span:last-child::after{display:none}
+  .feature{border:1px solid var(--ink);background:var(--card)}
+  .feature .frame{aspect-ratio:4/5;display:flex;align-items:center;justify-content:center;background:repeating-linear-gradient(135deg,transparent 0 13px,rgba(22,20,15,0.035) 13px 14px),var(--paper-2)}
+  .feature .frame .obj{font-family:var(--display);font-weight:700;font-size:15px;color:var(--silver);letter-spacing:0.04em}
+  .feature .cap{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-top:1px solid var(--ink)}
+  .feature .cap b{font-family:var(--display);font-weight:700;font-size:15px}
+  .feature .cap em{font-style:normal;font-size:12px;font-weight:600;letter-spacing:0.06em;color:var(--ink-soft)}
+  .tag-row{display:flex;border:1px solid var(--ink);border-top:none}
+  .tag-row span{flex:1;text-align:center;padding:9px 4px;font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;border-right:1px solid var(--ink);color:var(--ink-soft)}
+  .tag-row span:last-child{border-right:none}
+
+  /* WHAT WE PRINT */
+  .cats{padding:84px 0;background:var(--paper-2);border-top:1px solid var(--ink);border-bottom:1px solid var(--ink)}
+  .cats-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:50px;flex-wrap:wrap}
+  .cats-head h2{font-family:var(--display);font-weight:800;font-size:clamp(34px,5vw,58px);line-height:0.95;letter-spacing:-0.02em}
+  .cats-head p{max-width:340px;font-size:15.5px;color:var(--ink-soft)}
+  .cat{display:grid;grid-template-columns:120px 1fr auto;gap:30px;align-items:center;padding:24px 8px;border-top:1px solid var(--line);transition:background .18s}
+  .cat:last-of-type{border-bottom:1px solid var(--line)}
+  .cat:hover{background:var(--card)}
+  .cat .thumb{width:120px;height:120px;background:var(--card);border:1px solid var(--ink);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:700;color:var(--silver);font-size:13px;letter-spacing:0.04em;background-image:repeating-linear-gradient(135deg,transparent 0 11px,rgba(22,20,15,0.04) 11px 12px)}
+  .cat .body h3{font-family:var(--display);font-weight:700;font-size:27px;letter-spacing:-0.01em;margin-bottom:6px}
+  .cat .body p{font-size:15.5px;color:var(--ink-soft);max-width:520px}
+  .cat .go{font-family:var(--display);font-weight:600;font-size:15px;color:var(--ink-soft);white-space:nowrap}
+  .cat:hover .go{color:var(--orange-deep)}
+
+  /* CATEGORY PAGE HERO + SHOP GRID */
+  .cat-hero{padding:62px 0 38px}
+  .cat-hero .crumb{font-size:13px;font-weight:600;letter-spacing:0.04em;color:var(--ink-soft);margin-bottom:18px}
+  .cat-hero .crumb a:hover{color:var(--orange-deep)}
+  .cat-hero h1{font-family:var(--display);font-weight:800;font-size:clamp(42px,7vw,92px);line-height:0.9;letter-spacing:-0.03em}
+  .cat-hero p{margin-top:22px;max-width:520px;font-size:18px;color:var(--ink-soft)}
+  .shop{padding:0 0 84px}
+  .shop-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .product{border:1px solid var(--ink);background:var(--card);transition:transform .14s}
+  .product:hover{transform:translateY(-3px)}
+  .product .pimg{aspect-ratio:1;display:flex;align-items:center;justify-content:center;background:repeating-linear-gradient(135deg,transparent 0 13px,rgba(22,20,15,0.035) 13px 14px),var(--paper-2);font-family:var(--display);font-weight:700;color:var(--silver);font-size:13px;letter-spacing:0.05em}
+  .product .pmeta{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 15px;border-top:1px solid var(--ink)}
+  .product .pmeta b{font-family:var(--display);font-weight:700;font-size:15.5px;letter-spacing:-0.01em}
+  .product .pmeta span{font-weight:600;color:var(--ink-soft);font-size:14px;white-space:nowrap}
+
+  /* CTA BAND */
+  .cta-band{background:var(--ink);color:var(--paper);padding:50px 0}
+  .cta-band .wrap{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+  .cta-band h3{font-family:var(--display);font-weight:800;font-size:clamp(26px,3.6vw,40px);letter-spacing:-0.02em}
+  .cta-band p{color:#9A958B;margin-top:7px;font-size:15.5px;max-width:440px}
+
+  /* RECENT WORK (home, dark) */
+  .work{padding:88px 0;background:var(--ink);color:var(--paper)}
+  .work-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:42px;flex-wrap:wrap}
+  .work-head h2{font-family:var(--display);font-weight:800;font-size:clamp(34px,5vw,58px);line-height:0.95;letter-spacing:-0.02em}
+  .work-head .sub{font-size:14px;font-weight:600;letter-spacing:0.04em;color:#A7A296;text-transform:uppercase}
+  .ig{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .ig a{position:relative;aspect-ratio:1;overflow:hidden;background:#201D17;border:1px solid rgba(232,228,219,0.10)}
+  .ig img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .55s ease}
+  .ig a:hover img{transform:scale(1.06)}
+  .ig .ph{position:absolute;inset:0;display:flex;align-items:flex-end;padding:14px;color:#6F6B61;font-family:var(--display);font-weight:700;font-size:13px;background:linear-gradient(180deg,#23201A,#1a1813)}
+  .work-foot{margin-top:30px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .work-foot .note{font-size:13px;color:#8A857B}
+
+  /* REQUEST (orange) */
+  .req{padding:90px 0;background:var(--orange);color:var(--ink)}
+  .req-grid{display:grid;grid-template-columns:0.9fr 1.1fr;gap:60px;align-items:start}
+  .req-grid h2{font-family:var(--display);font-weight:800;font-size:clamp(40px,6vw,76px);line-height:0.9;letter-spacing:-0.025em}
+  .req-grid .blurb{margin-top:24px;font-size:18px;max-width:380px;color:rgba(22,20,15,0.82)}
+  .req-grid .blurb b{font-weight:700;color:var(--ink)}
+  .req-note{margin-top:34px;font-size:14px;font-weight:600;color:rgba(22,20,15,0.7);max-width:330px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .field{margin-bottom:18px}
+  .field label{display:block;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px;color:rgba(22,20,15,0.78)}
+  .field label .req-star{color:#7a1f00}
+  input,select,textarea{width:100%;background:#F4F1EA;border:1.5px solid var(--ink);color:var(--ink);font-family:var(--body);font-size:15.5px;padding:13px 14px;transition:border-color .15s,box-shadow .15s}
+  textarea{resize:vertical;min-height:104px}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--ink);box-shadow:3px 3px 0 var(--ink)}
+  input::placeholder,textarea::placeholder{color:#8a8478}
+  select{appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' stroke='%2316140F' stroke-width='1.6' fill='none'/></svg>");background-repeat:no-repeat;background-position:right 14px center;padding-right:38px}
+  .drop{border:1.5px dashed var(--ink);background:#F4F1EA;padding:18px;text-align:center;cursor:pointer;transition:background .15s}
+  .drop:hover{background:#efe9dc}
+  .drop.drag{background:#efe9dc;border-style:solid}
+  .drop .m{font-size:14.5px;font-weight:600}
+  .drop .m b{color:var(--orange-deep)}
+  .drop .s{font-size:12px;color:var(--ink-soft);margin-top:5px;font-weight:600;letter-spacing:0.03em}
+  .drop .f{display:none;margin-top:11px;font-size:13px;font-weight:700;align-items:center;justify-content:center;gap:10px}
+  .drop .f.show{display:flex}
+  .drop .f button{background:none;border:none;cursor:pointer;font-size:15px;color:var(--ink-soft)}
+  .or{display:flex;align-items:center;gap:14px;margin:13px 0;font-size:11px;font-weight:700;letter-spacing:0.16em;color:rgba(22,20,15,0.6)}
+  .or::before,.or::after{content:"";flex:1;height:1.5px;background:rgba(22,20,15,0.25)}
+  .submit{margin-top:24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .btn-send{font-family:var(--body);font-weight:700;font-size:16px;background:var(--ink);color:var(--orange);padding:15px 30px;border:1.5px solid var(--ink);cursor:pointer;transition:transform .12s,box-shadow .15s}
+  .btn-send:hover{box-shadow:4px 4px 0 rgba(22,20,15,0.35)}
+  .btn-send:active{transform:translateY(2px);box-shadow:none}
+  .small-note{font-size:13px;font-weight:600;color:rgba(22,20,15,0.7);max-width:200px}
+  .success{display:none;border:1.5px solid var(--ink);background:#F4F1EA;padding:54px 28px;text-align:center}
+  .success.show{display:block}
+  .success h3{font-family:var(--display);font-weight:800;font-size:30px;margin-bottom:10px}
+  .success p{font-size:16px;color:var(--ink-soft)}
+  .success .x{font-family:var(--display);font-weight:800;font-size:40px;color:var(--orange-deep);margin-bottom:14px}
+
+  /* FOOTER */
+  .ft{background:var(--ink);color:var(--paper);padding:70px 0 38px;border-top:1px solid rgba(232,228,219,0.12)}
+  .ft-top{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:40px;padding-bottom:46px;border-bottom:1px solid rgba(232,228,219,0.12)}
+  .ft .logo{color:var(--paper);font-size:24px;margin-bottom:16px}
+  .ft-top p{color:#9A958B;font-size:14.5px;max-width:300px}
+  .ft-col h4{font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:#8A857B;margin-bottom:15px;font-weight:700}
+  .ft-col a{display:block;color:var(--paper);opacity:.82;font-size:15px;margin-bottom:11px;transition:opacity .15s,color .15s}
+  .ft-col a:hover{opacity:1;color:var(--orange)}
+  .ft-bot{display:flex;justify-content:space-between;align-items:center;padding-top:26px;flex-wrap:wrap;gap:10px;font-size:13px;color:#8A857B;font-weight:500}
+
+  /* reveals */
+  .fade{opacity:0;transform:translateY(20px);transition:opacity .7s cubic-bezier(.16,.84,.44,1),transform .7s cubic-bezier(.16,.84,.44,1)}
+  .fade.in{opacity:1;transform:none}
+  .hero h1,.hero-lede,.hero-cta,.feature{opacity:0;transform:translateY(22px);animation:rise .8s cubic-bezier(.16,.84,.44,1) forwards}
+  .hero-lede{animation-delay:.12s}.hero-cta{animation-delay:.2s}.feature{animation-delay:.16s}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  @media(max-width:920px){
+    .hero-grid{grid-template-columns:1fr;gap:44px}.feature{max-width:380px}
+    .req-grid{grid-template-columns:1fr;gap:34px}
+    .ig{grid-template-columns:repeat(2,1fr)}
+    .ft-top{grid-template-columns:1fr 1fr}
+    .shop-grid{grid-template-columns:repeat(2,1fr)}
+  }
+  @media(max-width:640px){
+    .catbar-in{height:48px;gap:20px}.catbar-label{display:none}
+    .cat{grid-template-columns:72px 1fr;gap:16px}.cat .thumb{width:72px;height:72px}.cat .go{display:none}
+    .row2{grid-template-columns:1fr}.ft-top{grid-template-columns:1fr}
+    .hero-meta{gap:14px}.hero-meta span{gap:14px}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.fade,.hero h1,.hero-lede,.hero-cta,.feature{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="wrap nav-in">
+    <a href="index.html" class="logo"><span class="sq"></span>Roam Prints</a>
+    <a class="pill orange" href="index.html#request">Request a print</a>
+  </div>
+</header>
+<div class="catbar">
+  <div class="wrap catbar-in">
+    <span class="catbar-label">Categories</span>
+    <nav class="catbar-links"><a class="cl on" href="index.html">Home</a><a class="cl" href="function-organizers.html">Function / Organizers</a><a class="cl" href="automotive.html">Automotive</a><a class="cl" href="decor.html">Decor</a><a class="cl" href="keychains.html">Keychains</a></nav>
+  </div>
+</div>
+
+<section class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="kicker">Roam Prints Studio — Custom 3D Printing</span>
+      <h1>Made to<br><span class="mark">order.</span></h1>
+      <p class="hero-lede">Custom 3D prints — one-off ideas, functional parts, display pieces. You bring the concept, we design it, print it, and ship it to you.</p>
+      <div class="hero-cta">
+        <a class="pill orange" href="#request">Request a print</a>
+        <a class="text-link" href="#work">See recent work →</a>
+      </div>
+      <div class="hero-meta"><span>Custom</span><span>Functional</span><span>Automotive</span><span>Decor</span></div>
+    </div>
+    <div>
+      <div class="feature">
+        <div class="frame"><span class="obj">FEATURED PRINT</span></div>
+        <div class="cap"><b>Custom intake piece</b><em>Recent job</em></div>
+      </div>
+      <div class="tag-row"><span>Designed</span><span>Sliced</span><span>Printed in-house</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="cats" id="cats">
+  <div class="wrap">
+    <div class="cats-head fade">
+      <h2>What we print</h2>
+      <p>Four things we do well. If your idea doesn't fit a box, send it anyway — that's usually the fun stuff.</p>
+    </div>
+    <a class="cat fade" href="function-organizers.html">
+      <div class="thumb">FUNCTION</div>
+      <div class="body"><h3>Function / Organizers</h3><p>Gridfinity bins, brackets, mounts, shop tooling — parts built to hold up and do their job.</p></div>
+      <div class="go">View →</div>
+    </a>
+    <a class="cat fade" href="automotive.html">
+      <div class="thumb">AUTO</div>
+      <div class="body"><h3>Automotive</h3><p>Car-culture display pieces, badges, and gear for people who get it. Made to look the part.</p></div>
+      <div class="go">View →</div>
+    </a>
+    <a class="cat fade" href="decor.html">
+      <div class="thumb">DECOR</div>
+      <div class="body"><h3>Decor</h3><p>Statement objects and shelf pieces with finish work — the kind that don't look 3D-printed.</p></div>
+      <div class="go">View →</div>
+    </a>
+    <a class="cat fade" href="keychains.html">
+      <div class="thumb">KEYS</div>
+      <div class="body"><h3>Keychains</h3><p>Small-batch keychains and tags — quick, custom, and easy to gift.</p></div>
+      <div class="go">View →</div>
+    </a>
+  </div>
+</section>
+
+<section class="work" id="work">
+  <div class="wrap">
+    <div class="work-head fade">
+      <h2>Recent work</h2>
+      <span class="sub">Straight from @roamprintsstudio</span>
+    </div>
+    <div class="ig fade" id="ig"></div>
+    <div class="work-foot fade">
+      <span class="note">Pulled live from Instagram — new prints land here as we post them.</span>
+      <a class="pill line" href="https://www.instagram.com/roamprintsstudio" target="_blank" rel="noopener">Follow @roamprintsstudio &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<section class="req" id="request">
+  <div class="wrap req-grid">
+    <div class="fade">
+      <h2>Got an idea?<br>Let's print it.</h2>
+      <p class="blurb">Tell us what you're after and we'll come back with a <b>quote and a turnaround</b> — usually the same day. The more detail you give, the faster we can price it.</p>
+      <p class="req-note">No commitment. This just starts the conversation.</p>
+    </div>
+    <div class="fade">
+      <form id="quoteForm" novalidate>
+        <div class="row2">
+          <div class="field"><label>Name <span class="req-star">*</span></label><input type="text" name="name" placeholder="Your name" required></div>
+          <div class="field"><label>Email or phone <span class="req-star">*</span></label><input type="text" name="contact" placeholder="So we can reach you" required></div>
+        </div>
+        <div class="field"><label>What are you looking to print? <span class="req-star">*</span></label><textarea name="description" placeholder="Describe the part, object, or idea — what it's for and any details that matter." required></textarea></div>
+        <div class="row2">
+          <div class="field"><label>What size do you need?</label><input type="text" name="size" placeholder="e.g. 120 x 80 x 40 mm, or 'palm-sized'"></div>
+          <div class="field"><label>Budget</label><select name="budget"><option value="">Select a range</option><option>Under $25</option><option>$25 - $75</option><option>$75 - $150</option><option>$150 - $300</option><option>$300+</option><option>Not sure yet</option></select></div>
+        </div>
+        <div class="field">
+          <label>File or reference picture</label>
+          <div class="drop" id="drop">
+            <input type="file" id="file" name="reference" accept=".stl,.3mf,.step,.stp,.obj,.png,.jpg,.jpeg,.webp,.pdf" hidden>
+            <div class="m"><b>Click to upload</b> or drag a file in</div>
+            <div class="s">STL / 3MF / STEP / OBJ / or an image - up to 50 MB</div>
+            <div class="f" id="fileShown"><span id="fileName"></span><button type="button" id="fileClear">x</button></div>
+          </div>
+          <div class="or">OR</div>
+          <input type="url" name="referenceLink" placeholder="Paste a link (Drive, Dropbox, Thingiverse, image URL)...">
+        </div>
+        <div class="row2">
+          <div class="field"><label>Timeline</label><select name="timeline"><option value="">When do you need it?</option><option>No rush</option><option>Within 2 weeks</option><option>Within a week</option><option>ASAP</option></select></div>
+          <div class="field"><label>Quantity</label><input type="text" name="quantity" placeholder="e.g. 1, or a batch of 10"></div>
+        </div>
+        <div class="submit">
+          <span class="small-note">We read every request personally.</span>
+          <button type="submit" class="btn-send">Send it over &rarr;</button>
+        </div>
+      </form>
+      <div class="success" id="success"><div class="x">&#10003;</div><h3>Got it.</h3><p>Your request is in. Expect a quote and turnaround from us shortly.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer class="ft">
+  <div class="wrap">
+    <div class="ft-top">
+      <div>
+        <div class="logo"><span class="sq"></span>Roam Prints Studio</div>
+        <p>Custom 3D printing — designed, sliced, and printed in-house, one order at a time.</p>
+      </div>
+      <div class="ft-col">
+        <h4>Categories</h4>
+        <a href="function-organizers.html">Function / Organizers</a>
+        <a href="automotive.html">Automotive</a>
+        <a href="decor.html">Decor</a>
+        <a href="keychains.html">Keychains</a>
+      </div>
+      <div class="ft-col">
+        <h4>Follow</h4>
+        <a href="https://www.instagram.com/roamprintsstudio" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.tiktok.com/@roamprints" target="_blank" rel="noopener">TikTok</a>
+        <a href="https://www.facebook.com/Roamprintsstudio/" target="_blank" rel="noopener">Facebook</a>
+        <a href="https://byroamprintsstudio.etsy.com" target="_blank" rel="noopener">Etsy</a>
+      </div>
+    </div>
+    <div class="ft-bot">
+      <span>© 2026 Roam Prints Studio — a Roam Collective brand</span>
+      <span>Made to order, shipped to you</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
+<script type="module">
+  /* ---- reveal on scroll ---- */
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:0.12});
+  document.querySelectorAll('.fade').forEach(el=>io.observe(el));
+
+  /* ---- Instagram feed ----
+     Paste your Behold JSON feed URL below to go live.
+     behold.so -> connect @roamprintsstudio (Creator/Business) -> create a JSON feed -> copy URL. */
+  const BEHOLD_FEED_URL = '';
+  const ig=document.getElementById('ig');
+  function placeholders(){for(let i=0;i<8;i++){const a=document.createElement('a');a.href='https://www.instagram.com/roamprintsstudio';a.target='_blank';a.rel='noopener';a.innerHTML=`<div class="ph">RPS / ${String(41-i).padStart(3,'0')}</div>`;ig.appendChild(a);}}
+  async function loadIG(){
+    if(!BEHOLD_FEED_URL){placeholders();return;}
+    try{
+      const r=await fetch(BEHOLD_FEED_URL); const {posts}=await r.json(); ig.innerHTML='';
+      posts.slice(0,8).forEach(p=>{const a=document.createElement('a');a.href=p.permalink;a.target='_blank';a.rel='noopener';a.innerHTML=`<img src="${p.sizes.medium.mediaUrl}" alt="${p.prunedCaption||'Roam Prints'}" loading="lazy">`;ig.appendChild(a);});
+    }catch(e){console.warn('IG feed unavailable:',e);ig.innerHTML='';placeholders();}
+  }
+  loadIG();
+
+  /* ---- file upload UI ---- */
+  const drop=document.getElementById('drop'),fileInput=document.getElementById('file'),shown=document.getElementById('fileShown'),fname=document.getElementById('fileName'),fclear=document.getElementById('fileClear');
+  drop.addEventListener('click',e=>{if(e.target!==fclear)fileInput.click()});
+  fileInput.addEventListener('change',()=>fileInput.files[0]&&show(fileInput.files[0].name));
+  ['dragover','dragenter'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('drag')}));
+  ['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('drag')}));
+  drop.addEventListener('drop',e=>{if(e.dataTransfer.files[0]){fileInput.files=e.dataTransfer.files;show(e.dataTransfer.files[0].name)}});
+  fclear.addEventListener('click',()=>{fileInput.value='';shown.classList.remove('show')});
+  function show(n){fname.textContent=n;shown.classList.add('show')}
+
+  /* ---- form submit (live) ---- */
+  const form=document.getElementById('quoteForm'),success=document.getElementById('success'),btn=form.querySelector('.btn-send');
+  const get=n=>form.querySelector(`[name="${n}"]`);   /* avoids form.name collision */
+  const errEl=document.createElement('p');errEl.style.cssText='display:none;color:#7a1f00;font-weight:700;font-size:14px;margin-top:14px';form.appendChild(errEl);
+  form.addEventListener('submit',async e=>{
+    e.preventDefault();
+    const req={name:get('name').value.trim(),contact:get('contact').value.trim(),description:get('description').value.trim()};
+    let ok=true;['name','contact','description'].forEach(k=>{get(k).style.borderColor=req[k]?'':'#7a1f00';if(!req[k])ok=false});
+    if(!ok){errEl.textContent='Please add your name, contact, and what you want printed.';errEl.style.display='block';return;}
+    errEl.style.display='none';btn.disabled=true;const label=btn.textContent;btn.textContent='Sending...';
+    try{
+      let fileUrl='';
+      if(fileInput.files[0]){
+        try{
+          const {upload}=await import('https://esm.sh/@vercel/blob@2.5.0/client');
+          const b=await upload(fileInput.files[0].name,fileInput.files[0],{access:'public',handleUploadUrl:'/api/blob-upload'});
+          fileUrl=b.url;
+        }catch(err){console.warn('File upload skipped:',err);}
+      }
+      const payload={...req,size:get('size').value.trim(),budget:get('budget').value,referenceLink:get('referenceLink').value.trim(),fileUrl,timeline:get('timeline').value,quantity:get('quantity').value.trim()};
+      const res=await fetch('/api/quote',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+      if(!res.ok)throw new Error('status '+res.status);
+      form.style.display='none';success.classList.add('show');success.scrollIntoView({behavior:'smooth',block:'center'});
+    }catch(err){
+      console.error(err);btn.disabled=false;btn.textContent=label;
+      errEl.textContent='Something went wrong sending your request. Please try again, or reach us on Instagram.';errEl.style.display='block';
+    }
+  });
+</script>

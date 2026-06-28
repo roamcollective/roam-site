@@ -1,0 +1,14 @@
+{
+  "name": "roam-prints-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Roam Prints Studio — static site + serverless contact form and Instagram feed.",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@vercel/blob": "^2.5.0",
+    "resend": "^6.16.0"
+  }
+}
