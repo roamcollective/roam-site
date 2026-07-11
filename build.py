@@ -414,7 +414,7 @@ def build_home():
     return (
         head(
             "Roam Prints Studio — Shop 3D prints and custom orders",
-            "Small-batch 3D prints, custom parts, and made-to-order pieces from Roam Prints Studio.",
+            "Shop small-batch 3D prints and request custom work from Roam Prints Studio.",
         )
         + nav("index.html")
         + f"""
@@ -423,7 +423,7 @@ def build_home():
     <div>
       <span class="kicker">Roam Prints Studio — Small-batch 3D prints</span>
       <h1>Shop the drop.<br><span class="mark">Custom too.</span></h1>
-      <p class="hero-lede">The first Roam Prints product is live now, with direct checkout for ready-to-buy items and custom print requests when you need something specific.</p>
+      <p class="hero-lede">Small-batch 3D prints ready to order, plus custom work when you need it.</p>
       <div class="hero-cta">
         <a class="pill orange" href="shop.html">Shop now</a>
         <a class="text-link" href="#request">Request a custom print</a>
@@ -450,39 +450,11 @@ def build_home():
   </div>
 </section>
 
-<div class="steps-wrap">
-  <section class="section">
-    <div class="wrap">
-      <div class="section-head fade">
-        <h2>A simpler way to buy</h2>
-        <p>Start with one live product, keep custom requests open, and add collections later when the lineup is big enough to need them.</p>
-      </div>
-      <div class="steps-grid">
-        <article class="step fade">
-          <span class="step-num">01</span>
-          <h3>Buy the live drop</h3>
-          <p>Ready-to-buy items go straight to checkout without making people dig through categories first.</p>
-        </article>
-        <article class="step fade">
-          <span class="step-num">02</span>
-          <h3>Request a variation</h3>
-          <p>If someone wants a tweak, they can still request a custom version without leaving the site.</p>
-        </article>
-        <article class="step fade">
-          <span class="step-num">03</span>
-          <h3>Keep growing from there</h3>
-          <p>The site is set up for one product now, with room to grow into more drops and categories later.</p>
-        </article>
-      </div>
-    </div>
-  </section>
-</div>
-
 <section class="catalog" id="preview">
   <div class="wrap">
     <div class="section-head fade">
-      <h2>First live item</h2>
-      <p>Your first product is wired up and ready to buy. More drops can be added here as soon as they are ready.</p>
+      <h2>Featured item</h2>
+      <p>Available now.</p>
     </div>
     <div class="{product_grid_class(SHOP_ITEMS[:4])}">{preview_cards}
     </div>
@@ -500,7 +472,7 @@ def build_home():
     </div>
     <div class="ig fade" id="ig"></div>
     <div class="work-foot fade">
-      <span class="note">Pulled live from Instagram so new prints land here as they go out.</span>
+      <span class="note">See more on Instagram.</span>
       <div class="work-socials">
         <a class="pill line" href="https://www.instagram.com/roamprintsstudio" target="_blank" rel="noopener">Follow @roamprintsstudio &rarr;</a>
         <a class="pill line sm" href="https://www.tiktok.com/@roamprints" target="_blank" rel="noopener">TikTok</a>
@@ -514,8 +486,8 @@ def build_home():
   <div class="wrap req-grid">
     <div class="fade">
       <h2>Need a custom print?<br>Let's make it.</h2>
-      <p class="blurb">Want a variation of the live product, or a totally new idea? Tell us what you're after and we'll come back with a <b>quote and a turnaround</b>.</p>
-      <p class="req-note">Mention the product name if you want a custom version of something already in the shop.</p>
+      <p class="blurb">Want a custom piece or a variation on an item? Tell us what you need and we'll send a <b>quote</b>.</p>
+      <p class="req-note">Mention the item name if you want a custom version.</p>
     </div>
     <div class="fade">
       <form id="quoteForm" novalidate>
