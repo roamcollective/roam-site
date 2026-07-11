@@ -88,6 +88,8 @@ CSS = r"""
   .product{display:flex;flex-direction:column;min-height:100%;border:1px solid var(--ink);background:var(--card);transition:transform .16s,box-shadow .16s}
   .product:hover{transform:translateY(-4px);box-shadow:0 14px 28px rgba(22,20,15,0.08)}
   .product .pimg{aspect-ratio:4/3;display:flex;align-items:flex-end;justify-content:flex-start;padding:18px;background:linear-gradient(140deg,rgba(255,90,30,0.16),rgba(22,20,15,0.04)),repeating-linear-gradient(135deg,transparent 0 12px,rgba(22,20,15,0.04) 12px 13px),var(--paper-2);border-bottom:1px solid var(--ink)}
+  .product .pimg.has-image{padding:0;overflow:hidden;background:var(--paper-2)}
+  .product .pimg img{width:100%;height:100%;display:block;object-fit:cover;object-position:center 42%}
   .product .pimg span{font-family:var(--display);font-size:30px;font-weight:800;letter-spacing:-0.03em;color:rgba(22,20,15,0.72)}
   .product-body{display:flex;flex:1;flex-direction:column;padding:20px;gap:16px}
   .product-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
@@ -217,10 +219,11 @@ LEGACY_REDIRECTS = {
 SHOP_ITEMS = [
     {
         "code": "LIVE 01",
-        "name": "BinBS Trashcan Wheels",
+        "name": "BinBS Wheels!",
         "price": "$30",
-        "summary": "Gold-tone mesh wheel covers for trash cans with maximum curbside disrespect. Sold per set.",
+        "summary": "Gold-tone mesh wheel covers with maximum curbside disrespect. Sold per set.",
         "status": "Available now",
+        "image": "assets/binbs-wheels.png",
         "buy_url": "https://buy.stripe.com/eVq5kw5SNdFib0SeIB6Na00",
     },
 ]
@@ -307,10 +310,16 @@ def render_product_cards(items):
     cards = []
     for item in items:
         href, label = product_action(item)
+        image = item.get("image", "").strip()
+        image_markup = (
+            f'<div class="pimg has-image"><img src="{escape(image, quote=True)}" alt="{escape(item["name"], quote=True)}"></div>'
+            if image
+            else f'<div class="pimg"><span>{escape(item["code"])}</span></div>'
+        )
         cards.append(
             f"""
       <article class="product fade">
-        <div class="pimg"><span>{escape(item["code"])}</span></div>
+        {image_markup}
         <div class="product-body">
           <div class="product-top">
             <span class="product-code">{escape(item["code"])}</span>
