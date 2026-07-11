@@ -58,6 +58,8 @@ CSS = r"""
   .hero-card{border:1px solid var(--ink);background:var(--ink-deep);color:var(--paper);overflow:hidden}
   .hero-card-media{aspect-ratio:1.06;overflow:hidden;background:#050504}
   .hero-card-media img{width:100%;height:100%;object-fit:cover}
+  .hero-card-media.logo-panel{display:grid;place-items:center;padding:28px}
+  .hero-card-media.logo-panel img{object-fit:contain}
   .hero-card-copy{padding:18px;border-top:1px solid rgba(232,228,219,0.16);display:flex;align-items:center;justify-content:space-between;gap:12px}
   .hero-card-copy b{font-family:var(--display);font-size:16px;letter-spacing:-0.01em}
   .hero-card-copy span{font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#C6C1B8}
@@ -432,11 +434,11 @@ def build_home():
       </div>
     </div>
     <div class="hero-card fade">
-      <div class="hero-card-media">
-        <img src="assets/banner.png" alt="Roam Prints 3D printer at work">
+      <div class="hero-card-media logo-panel">
+        <img src="assets/hero-logo.png" alt="Roam Prints logo">
       </div>
       <div class="hero-card-copy">
-        <b>Roam Prints launch setup</b>
+        <b>Roam Prints logo</b>
         <span>Shop + custom</span>
       </div>
       <div class="hero-card-tags">
