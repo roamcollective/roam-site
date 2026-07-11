@@ -4,6 +4,10 @@
   "private": true,
   "type": "module",
   "description": "Roam Prints Studio — static site + serverless contact form and Instagram feed.",
+  "scripts": {
+    "build": "python3 build.py",
+    "dev": "python3 -m http.server 3000"
+  },
   "engines": {
     "node": ">=18"
   },
