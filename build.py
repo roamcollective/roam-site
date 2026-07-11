@@ -563,7 +563,7 @@ def build_shop():
     return (
         head(
             "Shop — Roam Prints Studio",
-            "Browse Roam Prints Studio items in one simple shop and request custom versions when needed.",
+            "Shop Roam Prints Studio items and request custom versions when needed.",
         )
         + nav("shop.html")
         + f"""
@@ -571,20 +571,20 @@ def build_shop():
   <div class="wrap page-hero-grid">
     <div>
       <span class="kicker">Roam Prints Studio — Shop</span>
-      <h1>First drop is live.<br><span class="mark">More soon.</span></h1>
-      <p class="hero-lede">The first product is ready to buy now, and the shop is set up so you can keep adding new drops without rebuilding the whole site.</p>
+      <h1>Shop now.<br><span class="mark">Custom too.</span></h1>
+      <p class="hero-lede">Ready-to-order prints with custom options available.</p>
       <div class="hero-cta">
         <a class="pill orange" href="#catalog">Browse items</a>
         <a class="text-link" href="index.html#request">Need something custom?</a>
       </div>
     </div>
     <aside class="summary-card fade">
-      <h3>Direct checkout, custom options still open.</h3>
-      <p>Ready-to-buy products can go straight to Stripe, while custom tweaks and one-off ideas still route through your request form.</p>
+      <h3>Buy now. Request custom.</h3>
+      <p>Checkout live items here or send a custom order request.</p>
       <div class="summary-list">
-        <span>Live now</span>
-        <span>Stripe ready</span>
-        <span>Custom tweaks</span>
+        <span>Ready to buy</span>
+        <span>Custom orders</span>
+        <span>Small-batch</span>
       </div>
     </aside>
   </div>
@@ -594,9 +594,8 @@ def build_shop():
   <div class="wrap">
     <div class="section-head fade">
       <h2>Shop</h2>
-      <p>Your first live item is ready to buy here now. As you add more products later, you can keep using this layout or split them into collections.</p>
     </div>
-    <p class="catalog-note fade">Need a variation of this item? Use the custom request form and mention the product name.</p>
+    <p class="catalog-note fade">Want a custom version? Mention the item name in your request.</p>
     <div class="{product_grid_class(SHOP_ITEMS)}">{render_product_cards(SHOP_ITEMS)}
     </div>
   </div>
@@ -612,7 +611,7 @@ def build_redirect(label):
     return (
         head(
             f"{label} — Roam Prints Studio",
-            f"{label} moved to the main shop page at Roam Prints Studio.",
+            f"Browse current Roam Prints Studio items in the main shop.",
             '<meta http-equiv="refresh" content="0; url=shop.html">',
         )
         + f"""
@@ -620,8 +619,8 @@ def build_redirect(label):
   <div class="wrap">
     <div class="redirect-card">
       <span class="kicker">Roam Prints Studio</span>
-      <h1>{escape(label)} moved.</h1>
-      <p>That collection now lives inside the main shop so the site stays simpler while the product lineup is still growing.</p>
+      <h1>Shop all items.</h1>
+      <p>Browse current items in the main shop.</p>
       <div class="hero-cta">
         <a class="pill orange" href="shop.html">Go to the shop</a>
         <a class="text-link" href="index.html">Back home</a>
