@@ -226,7 +226,7 @@ SHOP_ITEMS = [
         "summary": "Gold-tone mesh wheel covers with maximum curbside disrespect. Sold per set.",
         "status": "Available now",
         "image": "assets/binbs-wheels.png",
-        "buy_url": "https://buy.stripe.com/eVq5kw5SNdFib0SeIB6Na00",
+        "buy_url": "https://buy.stripe.com/bJefZachbbxa2umasl6Na02",
     },
 ]
 
