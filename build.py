@@ -1,11 +1,23 @@
 #!/usr/bin/env python3
+import json
 import os
+from datetime import date
 from html import escape
 from pathlib import Path
 
 
 OUT = Path(__file__).resolve().parent
 os.makedirs(OUT, exist_ok=True)
+
+SITE_NAME = "Roam Prints Studio"
+SITE_URL = "https://www.roamprints.studio"
+DEFAULT_OG_IMAGE = f"{SITE_URL}/assets/hero-logo.png"
+SOCIAL_LINKS = [
+    "https://www.instagram.com/roamprintsstudio",
+    "https://www.tiktok.com/@roamprints",
+    "https://www.facebook.com/Roamprintsstudio/",
+    "https://byroamprintsstudio.etsy.com",
+]
 
 
 CSS = r"""
@@ -24,13 +36,18 @@ CSS = r"""
   img{max-width:100%;display:block}
   .wrap{max-width:1240px;margin:0 auto;padding:0 32px}
   .kicker{font-size:12px;letter-spacing:0.22em;text-transform:uppercase;font-weight:700;color:var(--ink-soft)}
+  .skip-link{position:absolute;left:20px;top:-56px;z-index:120;padding:10px 14px;border:1px solid var(--ink);background:var(--ink);color:var(--paper);font-weight:700}
+  .skip-link:focus{top:16px}
+  #preview,#catalog,#request{scroll-margin-top:96px}
 
   /* NAV */
   .nav{position:sticky;top:0;z-index:60;background:rgba(232,228,219,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
   .nav-in{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:72px;padding:16px 0}
+  .nav-in > *{min-width:0}
   .logo{display:flex;align-items:center;gap:12px;font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:-0.01em}
   .logo-mark{height:30px;width:auto}
   .nav-actions{display:flex;align-items:center;gap:24px;flex-wrap:wrap;justify-content:flex-end}
+  .nav-actions > *{min-width:0}
   .nav-links{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
   .nav-links a{font-size:14px;font-weight:700;letter-spacing:0.02em;color:var(--ink-soft);padding:6px 0;border-bottom:2px solid transparent;transition:color .18s,border-color .18s}
   .nav-links a:hover{color:var(--ink)}
@@ -48,6 +65,7 @@ CSS = r"""
   /* HERO */
   .hero{padding:80px 0 78px}
   .hero-grid{display:grid;grid-template-columns:1.05fr 0.95fr;gap:44px;align-items:center}
+  .hero-grid > *,.page-hero-grid > *,.req-grid > *,.section-head > *,.work-head > *{min-width:0}
   .hero h1,.page-hero h1{font-family:var(--display);font-weight:800;font-size:clamp(52px,9vw,116px);line-height:0.88;letter-spacing:-0.04em;margin-top:18px}
   .hero h1 .mark,.page-hero h1 .mark{position:relative;white-space:nowrap}
   .hero h1 .mark::after,.page-hero h1 .mark::after{content:"";position:absolute;left:-2px;right:-2px;bottom:0.1em;height:0.25em;background:var(--orange);z-index:-1}
@@ -96,9 +114,10 @@ CSS = r"""
   .product .pimg span{font-family:var(--display);font-size:30px;font-weight:800;letter-spacing:-0.03em;color:rgba(22,20,15,0.72)}
   .product-body{display:flex;flex:1;flex-direction:column;padding:20px;gap:16px}
   .product-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .product-top > *,.product-bottom > *{min-width:0}
   .product-code,.product-status{font-size:11px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase}
   .product-code{color:var(--orange-deep)}
-  .product-status{color:var(--ink-soft)}
+  .product-status{color:var(--ink-soft);text-align:right}
   .product h3{font-family:var(--display);font-size:28px;font-weight:700;line-height:0.98;letter-spacing:-0.03em}
   .product p{font-size:15px;color:var(--ink-soft)}
   .product-bottom{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
@@ -108,7 +127,7 @@ CSS = r"""
   .page-hero{padding:84px 0 26px}
   .page-hero-grid{display:grid;grid-template-columns:1.08fr 0.92fr;gap:28px;align-items:start}
   .summary-card{padding:26px;border:1px solid var(--ink);background:var(--ink);color:var(--paper)}
-  .summary-card h3{font-family:var(--display);font-size:34px;font-weight:800;line-height:0.95;letter-spacing:-0.03em}
+  .summary-card h3{font-family:var(--display);font-size:clamp(28px,4vw,34px);font-weight:800;line-height:0.95;letter-spacing:-0.03em}
   .summary-card p{margin-top:16px;font-size:15.5px;color:#B9B3A9}
   .summary-list{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}
   .summary-list span{display:inline-flex;align-items:center;padding:9px 12px;border:1px solid rgba(232,228,219,0.2);font-size:11px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#E8E4DB}
@@ -194,11 +213,33 @@ CSS = r"""
     .hero{padding-top:64px}
   }
   @media(max-width:720px){
-    .nav-in{align-items:flex-start}
-    .nav-actions{justify-content:flex-start}
+    .wrap{padding:0 20px}
+    .nav{position:static}
+    .nav-in{flex-direction:column;align-items:flex-start;gap:14px}
+    .nav-actions{width:100%;flex-direction:column;align-items:flex-start;gap:14px}
+    .nav-links{width:100%;gap:14px}
+    .nav-actions .pill.orange{width:100%}
+    .hero{padding:48px 0 54px}
+    .page-hero{padding:56px 0 18px}
+    .catalog,.work,.req,.section{padding:64px 0}
+    .ft{padding:56px 0 30px}
+    .hero h1,.page-hero h1{font-size:clamp(40px,14vw,56px)}
+    .hero-lede,.req-grid .blurb{font-size:17px}
+    .hero-card-media.logo-panel{padding:20px}
+    .summary-card{padding:22px}
     .section-head,.work-head{margin-bottom:30px}
     .steps-grid,.shop-grid,.ig,.ft-top,.row2{grid-template-columns:1fr}
+    .shop-grid.single-item{grid-template-columns:1fr}
     .hero-meta{gap:10px}
+    .hero-meta span,.summary-list span{width:100%;justify-content:center}
+    .summary-list{display:grid;grid-template-columns:1fr}
+    .hero-card-tags{grid-template-columns:1fr}
+    .hero-card-tags span{border-right:none;border-top:1px solid rgba(232,228,219,0.14)}
+    .hero-card-tags span:first-child{border-top:none}
+    .product-top{flex-direction:column;align-items:flex-start;gap:6px}
+    .product-status{text-align:left}
+    .product-bottom{justify-content:flex-start}
+    .product-bottom .pill{width:100%}
     .product-bottom,.submit{align-items:flex-start}
   }
   @media(prefers-reduced-motion:reduce){
@@ -232,7 +273,64 @@ SHOP_ITEMS = [
 ]
 
 
-def head(title, description, extra_head=""):
+def absolute_url(path=""):
+    clean = path.lstrip("/")
+    return SITE_URL if not clean else f"{SITE_URL}/{clean}"
+
+
+def canonical_url(path):
+    return SITE_URL if path in ("", "/", "index.html") else absolute_url(path)
+
+
+def price_value(label):
+    raw = "".join(ch for ch in label if ch.isdigit() or ch == ".")
+    return raw or None
+
+
+def product_schema(item, page_path, include_context=True):
+    data = {
+        "@type": "Product",
+        "name": item["name"],
+        "description": item["summary"],
+        "image": [absolute_url(item["image"])],
+        "sku": item["code"],
+        "brand": {"@type": "Brand", "name": SITE_NAME},
+        "url": canonical_url(page_path),
+        "offers": {
+            "@type": "Offer",
+            "priceCurrency": "USD",
+            "availability": "https://schema.org/InStock",
+            "url": canonical_url(page_path),
+            "seller": {"@type": "Organization", "name": SITE_NAME},
+        },
+    }
+    price = price_value(item["price"])
+    if price:
+        data["offers"]["price"] = price
+    if include_context:
+        data["@context"] = "https://schema.org"
+    return data
+
+
+def head(
+    title,
+    description,
+    page_path,
+    extra_head="",
+    og_type="website",
+    robots="index,follow",
+    structured_data=None,
+    og_image=DEFAULT_OG_IMAGE,
+    og_image_alt=f"{SITE_NAME} logo",
+):
+    canonical = canonical_url(page_path)
+    data = structured_data or []
+    if isinstance(data, dict):
+        data = [data]
+    json_ld = "\n".join(
+        f'<script type="application/ld+json">{json.dumps(entry, separators=(",", ":"))}</script>'
+        for entry in data
+    )
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -240,14 +338,31 @@ def head(title, description, extra_head=""):
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{escape(title)}</title>
 <meta name="description" content="{escape(description)}">
+<meta name="robots" content="{escape(robots, quote=True)}">
+<meta name="theme-color" content="#FF5A1E">
+<link rel="canonical" href="{escape(canonical, quote=True)}">
+<meta property="og:site_name" content="{SITE_NAME}">
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="{escape(og_type, quote=True)}">
+<meta property="og:title" content="{escape(title, quote=True)}">
+<meta property="og:description" content="{escape(description, quote=True)}">
+<meta property="og:url" content="{escape(canonical, quote=True)}">
+<meta property="og:image" content="{escape(og_image, quote=True)}">
+<meta property="og:image:alt" content="{escape(og_image_alt, quote=True)}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{escape(title, quote=True)}">
+<meta name="twitter:description" content="{escape(description, quote=True)}">
+<meta name="twitter:image" content="{escape(og_image, quote=True)}">
 <link rel="icon" type="image/png" href="assets/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+{json_ld}
 {extra_head}
 <style>{CSS}</style>
 </head>
-<body>"""
+<body>
+<a class="skip-link" href="#main">Skip to content</a>"""
 
 
 def nav(active):
@@ -260,7 +375,7 @@ def nav(active):
   <div class="wrap nav-in">
     <a href="index.html" class="logo"><img src="assets/rp-mark.png" alt="" class="logo-mark">Roam Prints</a>
     <div class="nav-actions">
-      <nav class="nav-links">{links}</nav>
+      <nav class="nav-links" aria-label="Primary">{links}</nav>
       <a class="pill orange" href="index.html#request">Custom order</a>
     </div>
   </div>
@@ -273,7 +388,7 @@ FOOTER = """
     <div class="ft-top">
       <div>
         <img src="assets/logo-badge.png" alt="Roam Prints Studio" class="ft-logo">
-        <p>Small-batch 3D prints, made-to-order pieces, and custom jobs designed, sliced, and printed in-house.</p>
+        <p>Small-batch 3D prints and custom pieces made in-house.</p>
       </div>
       <div class="ft-col">
         <h4>Browse</h4>
@@ -283,10 +398,10 @@ FOOTER = """
       </div>
       <div class="ft-col">
         <h4>Follow</h4>
-        <a href="https://www.instagram.com/roamprintsstudio" target="_blank" rel="noopener">Instagram</a>
-        <a href="https://www.tiktok.com/@roamprints" target="_blank" rel="noopener">TikTok</a>
-        <a href="https://www.facebook.com/Roamprintsstudio/" target="_blank" rel="noopener">Facebook</a>
-        <a href="https://byroamprintsstudio.etsy.com" target="_blank" rel="noopener">Etsy</a>
+        <a href="https://www.instagram.com/roamprintsstudio" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a href="https://www.tiktok.com/@roamprints" target="_blank" rel="noopener noreferrer">TikTok</a>
+        <a href="https://www.facebook.com/Roamprintsstudio/" target="_blank" rel="noopener noreferrer">Facebook</a>
+        <a href="https://byroamprintsstudio.etsy.com" target="_blank" rel="noopener noreferrer">Etsy</a>
       </div>
     </div>
     <div class="ft-bot">
@@ -360,12 +475,12 @@ HOME_JS = """
 
   const BEHOLD_FEED_URL='https://feeds.behold.so/D0LzH9OnF470bbU27zej';
   const ig=document.getElementById('ig');
-  function placeholders(){for(let i=0;i<6;i++){const a=document.createElement('a');a.href='https://www.instagram.com/roamprintsstudio';a.target='_blank';a.rel='noopener';a.innerHTML=`<div class="ph">RPS / ${String(41-i).padStart(3,'0')}</div>`;ig.appendChild(a);}}
+  function placeholders(){for(let i=0;i<6;i++){const a=document.createElement('a');a.href='https://www.instagram.com/roamprintsstudio';a.target='_blank';a.rel='noopener noreferrer';a.innerHTML=`<div class="ph">RPS / ${String(41-i).padStart(3,'0')}</div>`;ig.appendChild(a);}}
   async function loadIG(){
     if(!BEHOLD_FEED_URL){placeholders();return;}
     try{
       const r=await fetch(BEHOLD_FEED_URL); const {posts}=await r.json(); ig.innerHTML='';
-      posts.slice(0,9).forEach(p=>{const a=document.createElement('a');a.href=p.permalink;a.target='_blank';a.rel='noopener';a.innerHTML=`<img src="${p.sizes.medium.mediaUrl}" alt="${p.prunedCaption||'Roam Prints'}" loading="lazy">`;ig.appendChild(a);});
+      posts.slice(0,9).forEach(p=>{const a=document.createElement('a');a.href=p.permalink;a.target='_blank';a.rel='noopener noreferrer';a.innerHTML=`<img src="${p.sizes.medium.mediaUrl}" alt="${p.prunedCaption||'Roam Prints'}" loading="lazy">`;ig.appendChild(a);});
     }catch(e){console.warn('IG feed unavailable:',e);ig.innerHTML='';placeholders();}
   }
   loadIG();
@@ -413,11 +528,30 @@ def build_home():
     preview_cards = render_product_cards(SHOP_ITEMS[:4])
     return (
         head(
-            "Roam Prints Studio — Shop 3D prints and custom orders",
+            "Roam Prints Studio | 3D Prints and Custom Orders",
             "Shop small-batch 3D prints and request custom work from Roam Prints Studio.",
+            "index.html",
+            structured_data=[
+                {
+                    "@context": "https://schema.org",
+                    "@type": "Organization",
+                    "name": SITE_NAME,
+                    "url": SITE_URL,
+                    "logo": DEFAULT_OG_IMAGE,
+                    "image": DEFAULT_OG_IMAGE,
+                    "sameAs": SOCIAL_LINKS,
+                },
+                {
+                    "@context": "https://schema.org",
+                    "@type": "WebSite",
+                    "name": SITE_NAME,
+                    "url": SITE_URL,
+                },
+            ],
         )
         + nav("index.html")
         + f"""
+<main id="main">
 <section class="hero" id="top">
   <div class="wrap hero-grid">
     <div>
@@ -474,9 +608,9 @@ def build_home():
     <div class="work-foot fade">
       <span class="note">See more on Instagram.</span>
       <div class="work-socials">
-        <a class="pill line" href="https://www.instagram.com/roamprintsstudio" target="_blank" rel="noopener">Follow @roamprintsstudio &rarr;</a>
-        <a class="pill line sm" href="https://www.tiktok.com/@roamprints" target="_blank" rel="noopener">TikTok</a>
-        <a class="pill line sm" href="https://www.facebook.com/Roamprintsstudio/" target="_blank" rel="noopener">Facebook</a>
+        <a class="pill line" href="https://www.instagram.com/roamprintsstudio" target="_blank" rel="noopener noreferrer">Follow @roamprintsstudio &rarr;</a>
+        <a class="pill line sm" href="https://www.tiktok.com/@roamprints" target="_blank" rel="noopener noreferrer">TikTok</a>
+        <a class="pill line sm" href="https://www.facebook.com/Roamprintsstudio/" target="_blank" rel="noopener noreferrer">Facebook</a>
       </div>
     </div>
   </div>
@@ -524,6 +658,7 @@ def build_home():
     </div>
   </div>
 </section>
+</main>
 """
         + FOOTER
         + HOME_JS
@@ -534,11 +669,34 @@ def build_home():
 def build_shop():
     return (
         head(
-            "Shop — Roam Prints Studio",
-            "Shop Roam Prints Studio items and request custom versions when needed.",
+            "Shop 3D Prints | Roam Prints Studio",
+            "Shop small-batch 3D prints from Roam Prints Studio and request custom versions when needed.",
+            "shop.html",
+            structured_data=[
+                {
+                    "@context": "https://schema.org",
+                    "@type": "CollectionPage",
+                    "name": f"Shop | {SITE_NAME}",
+                    "url": canonical_url("shop.html"),
+                    "description": "Shop small-batch 3D prints from Roam Prints Studio.",
+                    "mainEntity": {
+                        "@type": "ItemList",
+                        "itemListElement": [
+                            {
+                                "@type": "ListItem",
+                                "position": idx,
+                                "url": canonical_url("shop.html"),
+                                "item": product_schema(item, "shop.html", include_context=False),
+                            }
+                            for idx, item in enumerate(SHOP_ITEMS, start=1)
+                        ],
+                    },
+                }
+            ],
         )
         + nav("shop.html")
         + f"""
+<main id="main">
 <section class="page-hero">
   <div class="wrap page-hero-grid">
     <div>
@@ -572,6 +730,7 @@ def build_shop():
     </div>
   </div>
 </section>
+</main>
 """
         + FOOTER
         + REVEAL_SCRIPT
@@ -584,9 +743,12 @@ def build_redirect(label):
         head(
             f"{label} — Roam Prints Studio",
             f"Browse current Roam Prints Studio items in the main shop.",
-            '<meta http-equiv="refresh" content="0; url=shop.html">',
+            "shop.html",
+            extra_head='<meta http-equiv="refresh" content="0; url=shop.html">',
+            robots="noindex,follow",
         )
         + f"""
+<main id="main">
 <section class="redirect-page">
   <div class="wrap">
     <div class="redirect-card">
@@ -600,6 +762,7 @@ def build_redirect(label):
     </div>
   </div>
 </section>
+</main>
 """
         + FOOTER
         + PAGE_END
@@ -610,9 +773,41 @@ def write_file(path, contents):
     path.write_text(contents, encoding="utf-8")
 
 
+def build_robots():
+    return f"""User-agent: *
+Allow: /
+
+Sitemap: {SITE_URL}/sitemap.xml
+"""
+
+
+def build_sitemap():
+    today = date.today().isoformat()
+    entries = [
+        (canonical_url("index.html"), "weekly", "1.0"),
+        (canonical_url("shop.html"), "weekly", "0.9"),
+    ]
+    body = "\n".join(
+        f"""  <url>
+    <loc>{escape(loc)}</loc>
+    <lastmod>{today}</lastmod>
+    <changefreq>{freq}</changefreq>
+    <priority>{priority}</priority>
+  </url>"""
+        for loc, freq, priority in entries
+    )
+    return f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{body}
+</urlset>
+"""
+
+
 write_file(OUT / "index.html", build_home())
 write_file(OUT / "shop.html", build_shop())
 for slug, label in LEGACY_REDIRECTS.items():
     write_file(OUT / slug, build_redirect(label))
+write_file(OUT / "robots.txt", build_robots())
+write_file(OUT / "sitemap.xml", build_sitemap())
 
 print("Built:", sorted(p.name for p in OUT.iterdir()))

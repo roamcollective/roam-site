@@ -5,10 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Decor — Roam Prints Studio</title>
 <meta name="description" content="Browse current Roam Prints Studio items in the main shop.">
+<meta name="robots" content="noindex,follow">
+<meta name="theme-color" content="#FF5A1E">
+<link rel="canonical" href="https://www.roamprints.studio/shop.html">
+<meta property="og:site_name" content="Roam Prints Studio">
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Decor — Roam Prints Studio">
+<meta property="og:description" content="Browse current Roam Prints Studio items in the main shop.">
+<meta property="og:url" content="https://www.roamprints.studio/shop.html">
+<meta property="og:image" content="https://www.roamprints.studio/assets/hero-logo.png">
+<meta property="og:image:alt" content="Roam Prints Studio logo">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Decor — Roam Prints Studio">
+<meta name="twitter:description" content="Browse current Roam Prints Studio items in the main shop.">
+<meta name="twitter:image" content="https://www.roamprints.studio/assets/hero-logo.png">
 <link rel="icon" type="image/png" href="assets/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 <meta http-equiv="refresh" content="0; url=shop.html">
 <style>
   :root{
@@ -26,13 +42,18 @@
   img{max-width:100%;display:block}
   .wrap{max-width:1240px;margin:0 auto;padding:0 32px}
   .kicker{font-size:12px;letter-spacing:0.22em;text-transform:uppercase;font-weight:700;color:var(--ink-soft)}
+  .skip-link{position:absolute;left:20px;top:-56px;z-index:120;padding:10px 14px;border:1px solid var(--ink);background:var(--ink);color:var(--paper);font-weight:700}
+  .skip-link:focus{top:16px}
+  #preview,#catalog,#request{scroll-margin-top:96px}
 
   /* NAV */
   .nav{position:sticky;top:0;z-index:60;background:rgba(232,228,219,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
   .nav-in{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:72px;padding:16px 0}
+  .nav-in > *{min-width:0}
   .logo{display:flex;align-items:center;gap:12px;font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:-0.01em}
   .logo-mark{height:30px;width:auto}
   .nav-actions{display:flex;align-items:center;gap:24px;flex-wrap:wrap;justify-content:flex-end}
+  .nav-actions > *{min-width:0}
   .nav-links{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
   .nav-links a{font-size:14px;font-weight:700;letter-spacing:0.02em;color:var(--ink-soft);padding:6px 0;border-bottom:2px solid transparent;transition:color .18s,border-color .18s}
   .nav-links a:hover{color:var(--ink)}
@@ -50,6 +71,7 @@
   /* HERO */
   .hero{padding:80px 0 78px}
   .hero-grid{display:grid;grid-template-columns:1.05fr 0.95fr;gap:44px;align-items:center}
+  .hero-grid > *,.page-hero-grid > *,.req-grid > *,.section-head > *,.work-head > *{min-width:0}
   .hero h1,.page-hero h1{font-family:var(--display);font-weight:800;font-size:clamp(52px,9vw,116px);line-height:0.88;letter-spacing:-0.04em;margin-top:18px}
   .hero h1 .mark,.page-hero h1 .mark{position:relative;white-space:nowrap}
   .hero h1 .mark::after,.page-hero h1 .mark::after{content:"";position:absolute;left:-2px;right:-2px;bottom:0.1em;height:0.25em;background:var(--orange);z-index:-1}
@@ -98,9 +120,10 @@
   .product .pimg span{font-family:var(--display);font-size:30px;font-weight:800;letter-spacing:-0.03em;color:rgba(22,20,15,0.72)}
   .product-body{display:flex;flex:1;flex-direction:column;padding:20px;gap:16px}
   .product-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .product-top > *,.product-bottom > *{min-width:0}
   .product-code,.product-status{font-size:11px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase}
   .product-code{color:var(--orange-deep)}
-  .product-status{color:var(--ink-soft)}
+  .product-status{color:var(--ink-soft);text-align:right}
   .product h3{font-family:var(--display);font-size:28px;font-weight:700;line-height:0.98;letter-spacing:-0.03em}
   .product p{font-size:15px;color:var(--ink-soft)}
   .product-bottom{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
@@ -110,7 +133,7 @@
   .page-hero{padding:84px 0 26px}
   .page-hero-grid{display:grid;grid-template-columns:1.08fr 0.92fr;gap:28px;align-items:start}
   .summary-card{padding:26px;border:1px solid var(--ink);background:var(--ink);color:var(--paper)}
-  .summary-card h3{font-family:var(--display);font-size:34px;font-weight:800;line-height:0.95;letter-spacing:-0.03em}
+  .summary-card h3{font-family:var(--display);font-size:clamp(28px,4vw,34px);font-weight:800;line-height:0.95;letter-spacing:-0.03em}
   .summary-card p{margin-top:16px;font-size:15.5px;color:#B9B3A9}
   .summary-list{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}
   .summary-list span{display:inline-flex;align-items:center;padding:9px 12px;border:1px solid rgba(232,228,219,0.2);font-size:11px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#E8E4DB}
@@ -196,11 +219,33 @@
     .hero{padding-top:64px}
   }
   @media(max-width:720px){
-    .nav-in{align-items:flex-start}
-    .nav-actions{justify-content:flex-start}
+    .wrap{padding:0 20px}
+    .nav{position:static}
+    .nav-in{flex-direction:column;align-items:flex-start;gap:14px}
+    .nav-actions{width:100%;flex-direction:column;align-items:flex-start;gap:14px}
+    .nav-links{width:100%;gap:14px}
+    .nav-actions .pill.orange{width:100%}
+    .hero{padding:48px 0 54px}
+    .page-hero{padding:56px 0 18px}
+    .catalog,.work,.req,.section{padding:64px 0}
+    .ft{padding:56px 0 30px}
+    .hero h1,.page-hero h1{font-size:clamp(40px,14vw,56px)}
+    .hero-lede,.req-grid .blurb{font-size:17px}
+    .hero-card-media.logo-panel{padding:20px}
+    .summary-card{padding:22px}
     .section-head,.work-head{margin-bottom:30px}
     .steps-grid,.shop-grid,.ig,.ft-top,.row2{grid-template-columns:1fr}
+    .shop-grid.single-item{grid-template-columns:1fr}
     .hero-meta{gap:10px}
+    .hero-meta span,.summary-list span{width:100%;justify-content:center}
+    .summary-list{display:grid;grid-template-columns:1fr}
+    .hero-card-tags{grid-template-columns:1fr}
+    .hero-card-tags span{border-right:none;border-top:1px solid rgba(232,228,219,0.14)}
+    .hero-card-tags span:first-child{border-top:none}
+    .product-top{flex-direction:column;align-items:flex-start;gap:6px}
+    .product-status{text-align:left}
+    .product-bottom{justify-content:flex-start}
+    .product-bottom .pill{width:100%}
     .product-bottom,.submit{align-items:flex-start}
   }
   @media(prefers-reduced-motion:reduce){
@@ -210,6 +255,8 @@
 </style>
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to content</a>
+<main id="main">
 <section class="redirect-page">
   <div class="wrap">
     <div class="redirect-card">
@@ -223,13 +270,14 @@
     </div>
   </div>
 </section>
+</main>
 
 <footer class="ft">
   <div class="wrap">
     <div class="ft-top">
       <div>
         <img src="assets/logo-badge.png" alt="Roam Prints Studio" class="ft-logo">
-        <p>Small-batch 3D prints, made-to-order pieces, and custom jobs designed, sliced, and printed in-house.</p>
+        <p>Small-batch 3D prints and custom pieces made in-house.</p>
       </div>
       <div class="ft-col">
         <h4>Browse</h4>
@@ -239,10 +287,10 @@
       </div>
       <div class="ft-col">
         <h4>Follow</h4>
-        <a href="https://www.instagram.com/roamprintsstudio" target="_blank" rel="noopener">Instagram</a>
-        <a href="https://www.tiktok.com/@roamprints" target="_blank" rel="noopener">TikTok</a>
-        <a href="https://www.facebook.com/Roamprintsstudio/" target="_blank" rel="noopener">Facebook</a>
-        <a href="https://byroamprintsstudio.etsy.com" target="_blank" rel="noopener">Etsy</a>
+        <a href="https://www.instagram.com/roamprintsstudio" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a href="https://www.tiktok.com/@roamprints" target="_blank" rel="noopener noreferrer">TikTok</a>
+        <a href="https://www.facebook.com/Roamprintsstudio/" target="_blank" rel="noopener noreferrer">Facebook</a>
+        <a href="https://byroamprintsstudio.etsy.com" target="_blank" rel="noopener noreferrer">Etsy</a>
       </div>
     </div>
     <div class="ft-bot">
