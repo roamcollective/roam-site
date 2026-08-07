@@ -1,813 +1,368 @@
 #!/usr/bin/env python3
-import json
-import os
+"""Build the Roam Prints social hub and legacy route redirects."""
+
 from datetime import date
 from html import escape
 from pathlib import Path
 
 
 OUT = Path(__file__).resolve().parent
-os.makedirs(OUT, exist_ok=True)
-
 SITE_NAME = "Roam Prints Studio"
 SITE_URL = "https://www.roamprints.studio"
-DEFAULT_OG_IMAGE = f"{SITE_URL}/assets/hero-logo.png"
-SOCIAL_LINKS = [
-    "https://www.instagram.com/roamprintsstudio",
-    "https://www.tiktok.com/@roamprints",
-    "https://www.facebook.com/Roamprintsstudio/",
-    "https://byroamprintsstudio.etsy.com",
+EMAIL = "roamcollectivetsudio@gmail.com"
+OG_IMAGE = f"{SITE_URL}/assets/og-social-hub.png"
+
+SOCIALS = [
+    {
+        "name": "Instagram",
+        "handle": "@roamprintsstudio",
+        "url": "https://www.instagram.com/roamprintsstudio",
+        "mark": "IG",
+        "note": "Behind the scenes, fresh prints, and shop life.",
+    },
+    {
+        "name": "TikTok",
+        "handle": "@roamprints",
+        "url": "https://www.tiktok.com/@roamprints",
+        "mark": "TT",
+        "note": "Printer jokes, experiments, and the good kind of chaos.",
+    },
+    {
+        "name": "YouTube",
+        "handle": "@roamprints",
+        "url": "https://www.youtube.com/@roamprints",
+        "mark": "YT",
+        "note": "Longer builds, ideas in motion, and more from the studio.",
+    },
+    {
+        "name": "Facebook",
+        "handle": "Roam Prints Studio",
+        "url": "https://www.facebook.com/Roamprintsstudio/",
+        "mark": "FB",
+        "note": "Follow along with what we are making and where it goes.",
+    },
+]
+
+LEGACY_PAGES = [
+    "shop.html",
+    "function-organizers.html",
+    "automotive.html",
+    "decor.html",
+    "keychains.html",
 ]
 
 
 CSS = r"""
-  :root{
-    --paper:#E8E4DB;--paper-2:#DEDACF;--card:#EFECE4;--card-2:#F4F1EA;
-    --ink:#16140F;--ink-soft:#5A554A;--ink-deep:#0E0C09;
-    --orange:#FF5A1E;--orange-deep:#DC4309;--silver:#9C988E;
-    --line:rgba(22,20,15,0.14);--line-soft:rgba(22,20,15,0.08);
-    --display:'Bricolage Grotesque',sans-serif;--body:'Hanken Grotesk',sans-serif;
+  :root {
+    --ink: #11100e;
+    --ink-2: #1b1915;
+    --paper: #ece8df;
+    --paper-deep: #d8d2c6;
+    --orange: #ff5a1e;
+    --orange-bright: #ff7948;
+    --muted: #aaa397;
+    --line: rgba(236, 232, 223, .18);
+    --display: "DM Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --body: "Manrope", ui-sans-serif, system-ui, sans-serif;
   }
-  *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth}
-  body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-  ::selection{background:var(--orange);color:#16140F}
-  a{color:inherit;text-decoration:none}
-  img{max-width:100%;display:block}
-  .wrap{max-width:1240px;margin:0 auto;padding:0 32px}
-  .kicker{font-size:12px;letter-spacing:0.22em;text-transform:uppercase;font-weight:700;color:var(--ink-soft)}
-  .skip-link{position:absolute;left:20px;top:-56px;z-index:120;padding:10px 14px;border:1px solid var(--ink);background:var(--ink);color:var(--paper);font-weight:700}
-  .skip-link:focus{top:16px}
-  #preview,#catalog,#request{scroll-margin-top:96px}
-
-  /* NAV */
-  .nav{position:sticky;top:0;z-index:60;background:rgba(232,228,219,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
-  .nav-in{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:72px;padding:16px 0}
-  .nav-in > *{min-width:0}
-  .logo{display:flex;align-items:center;gap:12px;font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:-0.01em}
-  .logo-mark{height:30px;width:auto}
-  .nav-actions{display:flex;align-items:center;gap:24px;flex-wrap:wrap;justify-content:flex-end}
-  .nav-actions > *{min-width:0}
-  .nav-links{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
-  .nav-links a{font-size:14px;font-weight:700;letter-spacing:0.02em;color:var(--ink-soft);padding:6px 0;border-bottom:2px solid transparent;transition:color .18s,border-color .18s}
-  .nav-links a:hover{color:var(--ink)}
-  .nav-links a.on{color:var(--ink);border-bottom-color:var(--orange)}
-  .pill{display:inline-flex;align-items:center;justify-content:center;font-family:var(--body);font-weight:700;font-size:14px;padding:11px 20px;border:1px solid var(--ink);background:var(--ink);color:var(--paper);transition:background .18s,color .18s,border-color .18s;cursor:pointer}
-  .pill:hover{background:transparent;color:var(--ink)}
-  .pill.orange{background:var(--orange);border-color:var(--orange);color:#16140F}
-  .pill.orange:hover{background:var(--orange-deep);border-color:var(--orange-deep);color:#16140F}
-  .pill.line{background:transparent;border-color:rgba(232,228,219,0.38);color:var(--paper)}
-  .pill.line:hover{background:var(--orange);border-color:var(--orange);color:#16140F}
-  .pill.sm{padding:9px 14px;font-size:13px}
-  .text-link{font-weight:700;display:inline-flex;align-items:center;gap:8px;border-bottom:2px solid var(--ink);padding-bottom:3px}
-  .text-link:hover{color:var(--orange-deep);border-color:var(--orange)}
-
-  /* HERO */
-  .hero{padding:80px 0 78px}
-  .hero-grid{display:grid;grid-template-columns:1.05fr 0.95fr;gap:44px;align-items:center}
-  .hero-grid > *,.page-hero-grid > *,.req-grid > *,.section-head > *,.work-head > *{min-width:0}
-  .hero h1,.page-hero h1{font-family:var(--display);font-weight:800;font-size:clamp(52px,9vw,116px);line-height:0.88;letter-spacing:-0.04em;margin-top:18px}
-  .hero h1 .mark,.page-hero h1 .mark{position:relative;white-space:nowrap}
-  .hero h1 .mark::after,.page-hero h1 .mark::after{content:"";position:absolute;left:-2px;right:-2px;bottom:0.1em;height:0.25em;background:var(--orange);z-index:-1}
-  .hero-lede{margin-top:30px;max-width:560px;font-size:18.5px;color:var(--ink-soft)}
-  .hero-cta{margin-top:32px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
-  .hero-meta{margin-top:42px;display:flex;gap:16px;flex-wrap:wrap}
-  .hero-meta span,.meta-chip{display:inline-flex;align-items:center;gap:8px;padding:9px 13px;border:1px solid var(--line);background:var(--card);font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-soft)}
-  .hero-card{border:1px solid var(--ink);background:var(--ink-deep);color:var(--paper);overflow:hidden}
-  .hero-card-media{aspect-ratio:1.06;overflow:hidden;background:#050504}
-  .hero-card-media img{width:100%;height:100%;object-fit:cover}
-  .hero-card-media.logo-panel{display:grid;place-items:center;padding:28px}
-  .hero-card-media.logo-panel img{object-fit:contain}
-  .hero-card-copy{padding:18px;border-top:1px solid rgba(232,228,219,0.16);display:flex;align-items:center;justify-content:space-between;gap:12px}
-  .hero-card-copy.solo{justify-content:flex-end}
-  .hero-card-copy b{font-family:var(--display);font-size:16px;letter-spacing:-0.01em}
-  .hero-card-copy span{font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#C6C1B8}
-  .hero-card-tags{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid rgba(232,228,219,0.16)}
-  .hero-card-tags span{padding:12px 10px;text-align:center;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#B0AAA0;border-right:1px solid rgba(232,228,219,0.14)}
-  .hero-card-tags span:last-child{border-right:none}
-
-  /* SECTION HEADERS */
-  .section{padding:84px 0}
-  .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:38px;flex-wrap:wrap}
-  .section-head h2{font-family:var(--display);font-weight:800;font-size:clamp(34px,5vw,58px);line-height:0.95;letter-spacing:-0.03em}
-  .section-head p{max-width:470px;font-size:16px;color:var(--ink-soft)}
-  .section-cta{margin-top:30px;display:flex;justify-content:flex-start}
-
-  /* STEPS */
-  .steps-wrap{background:var(--paper-2);border-top:1px solid var(--ink);border-bottom:1px solid var(--ink)}
-  .steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-  .step{padding:26px;border:1px solid var(--line);background:var(--card)}
-  .step-num{font-size:12px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;color:var(--orange-deep)}
-  .step h3{font-family:var(--display);font-weight:700;font-size:28px;letter-spacing:-0.02em;margin-top:14px}
-  .step p{margin-top:12px;font-size:15.5px;color:var(--ink-soft)}
-
-  /* SHOP / PRODUCTS */
-  .catalog{padding:84px 0}
-  .catalog-note{margin-top:-10px;margin-bottom:28px;font-size:15px;color:var(--ink-soft)}
-  .shop-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
-  .shop-grid.single-item{grid-template-columns:minmax(280px,380px)}
-  .product{display:flex;flex-direction:column;min-height:100%;border:1px solid var(--ink);background:var(--card);transition:transform .16s,box-shadow .16s}
-  .product:hover{transform:translateY(-4px);box-shadow:0 14px 28px rgba(22,20,15,0.08)}
-  .product .pimg{aspect-ratio:4/3;display:flex;align-items:flex-end;justify-content:flex-start;padding:18px;background:linear-gradient(140deg,rgba(255,90,30,0.16),rgba(22,20,15,0.04)),repeating-linear-gradient(135deg,transparent 0 12px,rgba(22,20,15,0.04) 12px 13px),var(--paper-2);border-bottom:1px solid var(--ink)}
-  .product .pimg.has-image{padding:0;overflow:hidden;background:var(--paper-2)}
-  .product .pimg img{width:100%;height:100%;display:block;object-fit:cover;object-position:center 42%}
-  .product .pimg span{font-family:var(--display);font-size:30px;font-weight:800;letter-spacing:-0.03em;color:rgba(22,20,15,0.72)}
-  .product-body{display:flex;flex:1;flex-direction:column;padding:20px;gap:16px}
-  .product-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
-  .product-top > *,.product-bottom > *{min-width:0}
-  .product-code,.product-status{font-size:11px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase}
-  .product-code{color:var(--orange-deep)}
-  .product-status{color:var(--ink-soft);text-align:right}
-  .product h3{font-family:var(--display);font-size:28px;font-weight:700;line-height:0.98;letter-spacing:-0.03em}
-  .product p{font-size:15px;color:var(--ink-soft)}
-  .product-bottom{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
-  .product-price{font-family:var(--display);font-size:26px;font-weight:800;letter-spacing:-0.03em}
-
-  /* PAGE HERO */
-  .page-hero{padding:84px 0 26px}
-  .page-hero-grid{display:grid;grid-template-columns:1.08fr 0.92fr;gap:28px;align-items:start}
-  .summary-card{padding:26px;border:1px solid var(--ink);background:var(--ink);color:var(--paper)}
-  .summary-card h3{font-family:var(--display);font-size:clamp(28px,4vw,34px);font-weight:800;line-height:0.95;letter-spacing:-0.03em}
-  .summary-card p{margin-top:16px;font-size:15.5px;color:#B9B3A9}
-  .summary-list{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}
-  .summary-list span{display:inline-flex;align-items:center;padding:9px 12px;border:1px solid rgba(232,228,219,0.2);font-size:11px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#E8E4DB}
-
-  /* RECENT WORK */
-  .work{padding:88px 0;background:var(--ink);color:var(--paper)}
-  .work-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:42px;flex-wrap:wrap}
-  .work-head h2{font-family:var(--display);font-weight:800;font-size:clamp(34px,5vw,58px);line-height:0.95;letter-spacing:-0.03em}
-  .work-head .sub{font-size:14px;font-weight:700;letter-spacing:0.04em;color:#A7A296;text-transform:uppercase}
-  .ig{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-  .ig a{position:relative;aspect-ratio:1;overflow:hidden;background:#201D17;border:1px solid rgba(232,228,219,0.10)}
-  .ig img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .55s ease}
-  .ig a:hover img{transform:scale(1.05)}
-  .ig .ph{position:absolute;inset:0;display:flex;align-items:flex-end;padding:14px;color:#6F6B61;font-family:var(--display);font-weight:700;font-size:13px;background:linear-gradient(180deg,#23201A,#1A1813)}
-  .work-foot{margin-top:30px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
-  .work-foot .note{font-size:13px;color:#8A857B}
-  .work-socials{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
-
-  /* REQUEST */
-  .req{padding:90px 0;background:var(--orange);color:var(--ink)}
-  .req-grid{display:grid;grid-template-columns:0.9fr 1.1fr;gap:60px;align-items:start}
-  .req-grid h2{font-family:var(--display);font-weight:800;font-size:clamp(40px,6vw,76px);line-height:0.9;letter-spacing:-0.03em}
-  .req-grid .blurb{margin-top:24px;font-size:18px;max-width:410px;color:rgba(22,20,15,0.82)}
-  .req-grid .blurb b{font-weight:700;color:var(--ink)}
-  .req-note{margin-top:28px;font-size:14px;font-weight:700;color:rgba(22,20,15,0.72);max-width:350px}
-  .row2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-  .field{margin-bottom:18px}
-  .field label{display:block;font-size:12px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px;color:rgba(22,20,15,0.78)}
-  .field label .req-star{color:#7A1F00}
-  input,select,textarea{width:100%;background:#F4F1EA;border:1.5px solid var(--ink);color:var(--ink);font-family:var(--body);font-size:15.5px;padding:13px 14px;transition:border-color .15s,box-shadow .15s}
-  textarea{resize:vertical;min-height:104px}
-  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--ink);box-shadow:3px 3px 0 var(--ink)}
-  input::placeholder,textarea::placeholder{color:#8A8478}
-  select{appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' stroke='%2316140F' stroke-width='1.6' fill='none'/></svg>");background-repeat:no-repeat;background-position:right 14px center;padding-right:38px}
-  .drop{border:1.5px dashed var(--ink);background:#F4F1EA;padding:18px;text-align:center;cursor:pointer;transition:background .15s}
-  .drop:hover,.drop.drag{background:#EFE9DC}
-  .drop .m{font-size:14.5px;font-weight:700}
-  .drop .m b{color:var(--orange-deep)}
-  .drop .s{font-size:12px;color:var(--ink-soft);margin-top:5px;font-weight:700;letter-spacing:0.03em}
-  .drop .f{display:none;margin-top:11px;font-size:13px;font-weight:800;align-items:center;justify-content:center;gap:10px}
-  .drop .f.show{display:flex}
-  .drop .f button{background:none;border:none;cursor:pointer;font-size:15px;color:var(--ink-soft)}
-  .or{display:flex;align-items:center;gap:14px;margin:13px 0;font-size:11px;font-weight:800;letter-spacing:0.16em;color:rgba(22,20,15,0.6)}
-  .or::before,.or::after{content:"";flex:1;height:1.5px;background:rgba(22,20,15,0.25)}
-  .submit{margin-top:24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
-  .btn-send{font-family:var(--body);font-weight:800;font-size:16px;background:var(--ink);color:var(--orange);padding:15px 30px;border:1.5px solid var(--ink);cursor:pointer;transition:transform .12s,box-shadow .15s}
-  .btn-send:hover{box-shadow:4px 4px 0 rgba(22,20,15,0.35)}
-  .btn-send:active{transform:translateY(2px);box-shadow:none}
-  .small-note{font-size:13px;font-weight:700;color:rgba(22,20,15,0.7);max-width:220px}
-  .success{display:none;border:1.5px solid var(--ink);background:#F4F1EA;padding:54px 28px;text-align:center}
-  .success.show{display:block}
-  .success h3{font-family:var(--display);font-weight:800;font-size:30px;margin-bottom:10px}
-  .success p{font-size:16px;color:var(--ink-soft)}
-  .success .x{font-family:var(--display);font-weight:800;font-size:40px;color:var(--orange-deep);margin-bottom:14px}
-
-  /* FOOTER */
-  .ft{background:var(--ink);color:var(--paper);padding:70px 0 38px;border-top:1px solid rgba(232,228,219,0.12)}
-  .ft-top{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px;padding-bottom:46px;border-bottom:1px solid rgba(232,228,219,0.12)}
-  .ft-logo{height:88px;width:auto;display:block;margin-bottom:18px}
-  .ft-top p{color:#9A958B;font-size:14.5px;max-width:320px}
-  .ft-col h4{font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:#8A857B;margin-bottom:15px;font-weight:800}
-  .ft-col a{display:block;color:var(--paper);opacity:.82;font-size:15px;margin-bottom:11px;transition:opacity .15s,color .15s}
-  .ft-col a:hover{opacity:1;color:var(--orange)}
-  .ft-bot{display:flex;justify-content:space-between;align-items:center;padding-top:26px;flex-wrap:wrap;gap:10px;font-size:13px;color:#8A857B;font-weight:600}
-
-  /* REDIRECT */
-  .redirect-page{min-height:100vh;display:flex;align-items:center;padding:60px 0}
-  .redirect-card{max-width:620px;padding:32px;border:1px solid var(--ink);background:var(--card)}
-  .redirect-card h1{font-family:var(--display);font-weight:800;font-size:clamp(38px,6vw,66px);line-height:0.9;letter-spacing:-0.03em}
-  .redirect-card p{margin-top:16px;font-size:17px;color:var(--ink-soft)}
-  .redirect-card .hero-cta{margin-top:24px}
-
-  /* REVEALS */
-  .fade{opacity:0;transform:translateY(20px);transition:opacity .7s cubic-bezier(.16,.84,.44,1),transform .7s cubic-bezier(.16,.84,.44,1)}
-  .fade.in{opacity:1;transform:none}
-  .hero h1,.hero-lede,.hero-cta,.hero-card,.page-hero h1,.summary-card{opacity:0;transform:translateY(22px);animation:rise .82s cubic-bezier(.16,.84,.44,1) forwards}
-  .hero-lede{animation-delay:.1s}.hero-cta{animation-delay:.18s}.hero-card{animation-delay:.14s}.summary-card{animation-delay:.14s}
-  @keyframes rise{to{opacity:1;transform:none}}
-
-  @media(max-width:980px){
-    .hero-grid,.page-hero-grid,.req-grid{grid-template-columns:1fr}
-    .steps-grid,.shop-grid,.ig,.ft-top{grid-template-columns:repeat(2,1fr)}
-    .hero{padding-top:64px}
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    overflow-x: hidden;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--body);
+    -webkit-font-smoothing: antialiased;
   }
-  @media(max-width:720px){
-    .wrap{padding:0 20px}
-    .nav{position:static}
-    .nav-in{flex-direction:column;align-items:flex-start;gap:14px}
-    .nav-actions{width:100%;flex-direction:column;align-items:flex-start;gap:14px}
-    .nav-links{width:100%;gap:14px}
-    .nav-actions .pill.orange{width:100%}
-    .hero{padding:48px 0 54px}
-    .page-hero{padding:56px 0 18px}
-    .catalog,.work,.req,.section{padding:64px 0}
-    .ft{padding:56px 0 30px}
-    .hero h1,.page-hero h1{font-size:clamp(40px,14vw,56px)}
-    .hero-lede,.req-grid .blurb{font-size:17px}
-    .hero-card-media.logo-panel{padding:20px}
-    .summary-card{padding:22px}
-    .section-head,.work-head{margin-bottom:30px}
-    .steps-grid,.shop-grid,.ig,.ft-top,.row2{grid-template-columns:1fr}
-    .shop-grid.single-item{grid-template-columns:1fr}
-    .hero-meta{gap:10px}
-    .hero-meta span,.summary-list span{width:100%;justify-content:center}
-    .summary-list{display:grid;grid-template-columns:1fr}
-    .hero-card-tags{grid-template-columns:1fr}
-    .hero-card-tags span{border-right:none;border-top:1px solid rgba(232,228,219,0.14)}
-    .hero-card-tags span:first-child{border-top:none}
-    .product-top{flex-direction:column;align-items:flex-start;gap:6px}
-    .product-status{text-align:left}
-    .product-bottom{justify-content:flex-start}
-    .product-bottom .pill{width:100%}
-    .product-bottom,.submit{align-items:flex-start}
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  ::selection { background: var(--orange); color: var(--ink); }
+  .skip-link {
+    position: absolute; left: 18px; top: -56px; z-index: 20;
+    padding: 10px 14px; background: var(--paper); color: var(--ink); font-weight: 800;
   }
-  @media(prefers-reduced-motion:reduce){
-    *{animation:none!important;transition:none!important}
-    .fade,.hero h1,.hero-lede,.hero-cta,.hero-card,.page-hero h1,.summary-card{opacity:1;transform:none}
+  .skip-link:focus { top: 18px; }
+  .shell { width: min(1180px, calc(100% - 48px)); margin: 0 auto; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 9px;
+    color: var(--orange-bright); font: 500 11px/1 var(--display);
+    letter-spacing: .16em; text-transform: uppercase;
+  }
+  .eyebrow::before { content: ""; width: 18px; height: 1px; background: currentColor; }
+
+  .masthead { position: relative; min-height: 100svh; isolation: isolate; overflow: clip; }
+  .masthead::after {
+    content: ""; position: absolute; inset: auto -15vw -19vw auto; z-index: -1;
+    width: min(57vw, 680px); aspect-ratio: 1; border-radius: 50%;
+    background: var(--orange); filter: blur(105px); opacity: .17; pointer-events: none;
+  }
+  .nav {
+    display: flex; align-items: center; justify-content: space-between; gap: 24px;
+    min-height: 84px; border-bottom: 1px solid var(--line);
+  }
+  .brand { display: inline-flex; align-items: center; gap: 11px; font: 500 14px/1 var(--display); letter-spacing: -.04em; }
+  .brand img { width: 31px; height: 31px; object-fit: contain; }
+  .nav-link {
+    color: var(--paper); font-size: 13px; font-weight: 800; letter-spacing: .01em;
+    border-bottom: 1px solid var(--orange); padding: 6px 0; transition: color .2s ease;
+  }
+  .nav-link:hover { color: var(--orange-bright); }
+  .hero {
+    display: grid; grid-template-columns: minmax(0, 1.04fr) minmax(340px, .96fr); gap: 60px;
+    align-items: center; min-height: calc(100svh - 84px); padding: 74px 0 86px;
+  }
+  h1, h2, p { margin: 0; }
+  h1 {
+    max-width: 720px; margin-top: 25px; font: 500 clamp(48px, 8.3vw, 114px)/.88 var(--display);
+    letter-spacing: -.085em; text-wrap: balance;
+  }
+  h1 em { color: var(--orange); font-style: normal; }
+  .hero-copy {
+    max-width: 520px; margin-top: 31px; color: var(--muted); font-size: clamp(16px, 1.45vw, 19px); line-height: 1.65;
+  }
+  .hero-actions { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; margin-top: 34px; }
+  .button {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    padding: 14px 18px; background: var(--orange); color: var(--ink);
+    font-size: 13px; font-weight: 900; letter-spacing: -.01em;
+    transition: transform .2s ease, background .2s ease;
+  }
+  .button:hover { background: var(--orange-bright); transform: translateY(-3px); }
+  .quiet-link { color: var(--paper); font-size: 13px; font-weight: 800; border-bottom: 1px solid var(--line); padding-bottom: 5px; }
+  .quiet-link:hover { color: var(--orange-bright); border-color: var(--orange); }
+  .art-card {
+    position: relative; min-height: 490px; overflow: hidden; background: #050504;
+    border: 1px solid rgba(236, 232, 223, .28); box-shadow: 22px 22px 0 rgba(255, 90, 30, .8);
+    transform: rotate(2.25deg); transition: transform .5s cubic-bezier(.2,.8,.2,1), box-shadow .5s ease;
+  }
+  .art-card:hover { transform: rotate(0deg) translate(-4px, -4px); box-shadow: 30px 30px 0 rgba(255, 90, 30, .8); }
+  .art-card img { width: 100%; height: 100%; min-height: 490px; object-fit: cover; }
+  .art-card figcaption {
+    position: absolute; right: 18px; bottom: 16px; left: 18px; display: flex; align-items: end; justify-content: space-between; gap: 18px;
+    padding-top: 34px; border-top: 1px solid rgba(236, 232, 223, .4); color: var(--paper);
+  }
+  .art-card strong { font: 500 13px/1.25 var(--display); letter-spacing: -.045em; }
+  .art-card span { color: #d0c9bd; font: 500 10px/1.25 var(--display); letter-spacing: .1em; text-align: right; text-transform: uppercase; }
+  .marquee {
+    overflow: hidden; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    background: var(--orange); color: var(--ink); white-space: nowrap;
+  }
+  .marquee-track { display: inline-flex; gap: 31px; min-width: max-content; padding: 16px 0; animation: marquee 26s linear infinite; }
+  .marquee-track span { font: 500 12px/1 var(--display); letter-spacing: .08em; text-transform: uppercase; }
+  .marquee-track b { font-family: var(--display); font-size: 13px; }
+  @keyframes marquee { to { transform: translateX(-50%); } }
+
+  .social-section { padding: clamp(82px, 12vw, 156px) 0; background: var(--paper); color: var(--ink); }
+  .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 30px; margin-bottom: 44px; }
+  .section-heading .eyebrow { color: #a8340d; }
+  h2 { max-width: 740px; margin-top: 20px; font: 500 clamp(38px, 6.2vw, 78px)/.93 var(--display); letter-spacing: -.08em; text-wrap: balance; }
+  .section-note { max-width: 290px; color: #5e574c; font-size: 14px; line-height: 1.55; }
+  .social-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid #aaa397; border-left: 1px solid #aaa397; }
+  .social-card {
+    position: relative; min-height: 270px; overflow: hidden; padding: 25px;
+    border-right: 1px solid #aaa397; border-bottom: 1px solid #aaa397;
+    background: var(--paper); transition: color .28s ease, background .28s ease, transform .28s ease;
+  }
+  .social-card::before { content: ""; position: absolute; width: 150px; height: 150px; right: -80px; top: -80px; border-radius: 50%; background: var(--orange); transform: scale(0); transition: transform .4s cubic-bezier(.2,.8,.2,1); }
+  .social-card:hover, .social-card:focus-visible { color: var(--paper); background: var(--ink-2); transform: translateY(-6px); outline: none; }
+  .social-card:hover::before, .social-card:focus-visible::before { transform: scale(1); }
+  .service-mark, .social-content, .arrow { position: relative; z-index: 1; }
+  .service-mark { display: grid; width: 45px; height: 45px; place-items: center; border: 1px solid currentColor; font: 500 13px/1 var(--display); letter-spacing: -.08em; }
+  .social-card:hover .service-mark, .social-card:focus-visible .service-mark { border-color: var(--orange); color: var(--orange-bright); }
+  .social-content { margin-top: 47px; }
+  .social-name { display: block; font: 500 clamp(25px, 3vw, 36px)/1 var(--display); letter-spacing: -.07em; }
+  .social-handle { display: block; margin-top: 9px; color: #746d62; font-size: 13px; font-weight: 800; }
+  .social-card:hover .social-handle, .social-card:focus-visible .social-handle { color: #c9c1b4; }
+  .social-note { max-width: 320px; margin-top: 17px; color: #6a6359; font-size: 13px; line-height: 1.5; }
+  .social-card:hover .social-note, .social-card:focus-visible .social-note { color: #d4cdc1; }
+  .arrow { position: absolute; right: 24px; bottom: 21px; font: 500 29px/1 var(--display); transition: transform .25s ease; }
+  .social-card:hover .arrow, .social-card:focus-visible .arrow { color: var(--orange-bright); transform: translate(5px, -5px); }
+
+  .contact-section { padding: 0; background: var(--ink); color: var(--paper); }
+  .contact-card { display: grid; grid-template-columns: 1.08fr .92fr; gap: 40px; padding: clamp(70px, 10vw, 124px) 0; }
+  .contact-card h2 { max-width: 680px; }
+  .contact-copy { align-self: end; }
+  .contact-copy p { max-width: 420px; color: #aaa397; font-size: 16px; line-height: 1.65; }
+  .email-link {
+    display: inline-flex; align-items: baseline; gap: 11px; margin-top: 26px; max-width: 100%;
+    color: var(--orange-bright); border-bottom: 1px solid currentColor; overflow-wrap: anywhere;
+    font: 500 clamp(16px, 2vw, 24px)/1.25 var(--display); letter-spacing: -.06em;
+    transition: color .2s ease;
+  }
+  .email-link:hover { color: var(--paper); }
+  .footer { border-top: 1px solid var(--line); padding: 25px 0 28px; }
+  .footer-inner { display: flex; justify-content: space-between; gap: 18px; color: #8e877c; font: 500 10px/1.5 var(--display); letter-spacing: .07em; text-transform: uppercase; }
+  .footer a:hover { color: var(--orange-bright); }
+
+  @media (max-width: 780px) {
+    .shell { width: min(100% - 36px, 650px); }
+    .nav { min-height: 70px; }
+    .nav-link { font-size: 12px; }
+    .hero { grid-template-columns: 1fr; gap: 49px; padding: 63px 0 68px; }
+    .art-card, .art-card img { min-height: 390px; }
+    .art-card { width: calc(100% - 20px); margin-left: 2px; box-shadow: 16px 16px 0 var(--orange); }
+    .section-heading, .contact-card { display: block; }
+    .section-note { margin-top: 25px; }
+    .social-grid { grid-template-columns: 1fr; }
+    .social-card { min-height: 244px; }
+    .contact-copy { margin-top: 42px; }
+    .footer-inner { flex-direction: column; }
+  }
+  @media (max-width: 420px) {
+    .brand { font-size: 12px; }
+    .brand img { width: 27px; height: 27px; }
+    h1 { font-size: 46px; }
+    .hero-copy { font-size: 16px; }
+    .art-card, .art-card img { min-height: 340px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   }
 """
 
 
-NAV_LINKS = [("Home", "index.html"), ("Shop", "shop.html")]
-LEGACY_REDIRECTS = {
-    "function-organizers.html": "Function / Organizers",
-    "automotive.html": "Automotive",
-    "decor.html": "Decor",
-    "keychains.html": "Keychains",
-}
-
-# Replace these items with your live products as they are ready.
-# Add a Stripe Payment Link to `buy_url` to switch an item from request-based
-# checkout to a direct Buy button without changing the rest of the site.
-SHOP_ITEMS = [
-    {
-        "code": "LIVE 01",
-        "name": "BinBS Wheels!",
-        "price": "$30",
-        "summary": "Gold-tone mesh wheel covers with maximum curbside disrespect. Sold per set.",
-        "status": "Available now",
-        "image": "assets/binbs-wheels.png",
-        "buy_url": "https://buy.stripe.com/bJefZachbbxa2umasl6Na02",
-    },
-]
-
-
-def absolute_url(path=""):
-    clean = path.lstrip("/")
-    return SITE_URL if not clean else f"{SITE_URL}/{clean}"
-
-
-def canonical_url(path):
-    return SITE_URL if path in ("", "/", "index.html") else absolute_url(path)
-
-
-def price_value(label):
-    raw = "".join(ch for ch in label if ch.isdigit() or ch == ".")
-    return raw or None
-
-
-def product_schema(item, page_path, include_context=True):
-    data = {
-        "@type": "Product",
-        "name": item["name"],
-        "description": item["summary"],
-        "image": [absolute_url(item["image"])],
-        "sku": item["code"],
-        "brand": {"@type": "Brand", "name": SITE_NAME},
-        "url": canonical_url(page_path),
-        "offers": {
-            "@type": "Offer",
-            "priceCurrency": "USD",
-            "availability": "https://schema.org/InStock",
-            "url": canonical_url(page_path),
-            "seller": {"@type": "Organization", "name": SITE_NAME},
-        },
+def document(title, description, body, *, robots="index,follow", canonical="/"):
+    schema = {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": SITE_NAME,
+        "url": SITE_URL,
+        "email": EMAIL,
+        "sameAs": [social["url"] for social in SOCIALS],
     }
-    price = price_value(item["price"])
-    if price:
-        data["offers"]["price"] = price
-    if include_context:
-        data["@context"] = "https://schema.org"
-    return data
-
-
-def head(
-    title,
-    description,
-    page_path,
-    extra_head="",
-    og_type="website",
-    robots="index,follow",
-    structured_data=None,
-    og_image=DEFAULT_OG_IMAGE,
-    og_image_alt=f"{SITE_NAME} logo",
-):
-    canonical = canonical_url(page_path)
-    data = structured_data or []
-    if isinstance(data, dict):
-        data = [data]
-    json_ld = "\n".join(
-        f'<script type="application/ld+json">{json.dumps(entry, separators=(",", ":"))}</script>'
-        for entry in data
-    )
-    return f"""<!DOCTYPE html>
+    canonical_url = SITE_URL if canonical == "/" else f"{SITE_URL}/{canonical}"
+    return f"""<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{escape(title)}</title>
-<meta name="description" content="{escape(description)}">
-<meta name="robots" content="{escape(robots, quote=True)}">
-<meta name="theme-color" content="#FF5A1E">
-<link rel="canonical" href="{escape(canonical, quote=True)}">
-<meta property="og:site_name" content="{SITE_NAME}">
-<meta property="og:locale" content="en_US">
-<meta property="og:type" content="{escape(og_type, quote=True)}">
-<meta property="og:title" content="{escape(title, quote=True)}">
-<meta property="og:description" content="{escape(description, quote=True)}">
-<meta property="og:url" content="{escape(canonical, quote=True)}">
-<meta property="og:image" content="{escape(og_image, quote=True)}">
-<meta property="og:image:alt" content="{escape(og_image_alt, quote=True)}">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="{escape(title, quote=True)}">
-<meta name="twitter:description" content="{escape(description, quote=True)}">
-<meta name="twitter:image" content="{escape(og_image, quote=True)}">
-<link rel="icon" type="image/png" href="assets/favicon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-{json_ld}
-{extra_head}
-<style>{CSS}</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="{escape(description, quote=True)}">
+  <meta name="robots" content="{robots}">
+  <link rel="canonical" href="{canonical_url}">
+  <link rel="icon" href="/assets/favicon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{escape(title, quote=True)}">
+  <meta property="og:description" content="{escape(description, quote=True)}">
+  <meta property="og:url" content="{canonical_url}">
+  <meta property="og:image" content="{OG_IMAGE}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{escape(title, quote=True)}">
+  <meta name="twitter:description" content="{escape(description, quote=True)}">
+  <meta name="twitter:image" content="{OG_IMAGE}">
+  <script type="application/ld+json">{escape(__import__('json').dumps(schema), quote=False)}</script>
+  <title>{escape(title)}</title>
+  <style>{CSS}</style>
 </head>
-<body>
-<a class="skip-link" href="#main">Skip to content</a>"""
-
-
-def nav(active):
-    links = "".join(
-        f'<a class="{"on" if href == active else ""}" href="{href}">{label}</a>'
-        for label, href in NAV_LINKS
-    )
-    return f"""
-<header class="nav">
-  <div class="wrap nav-in">
-    <a href="index.html" class="logo"><img src="assets/rp-mark.png" alt="" class="logo-mark">Roam Prints</a>
-    <div class="nav-actions">
-      <nav class="nav-links" aria-label="Primary">{links}</nav>
-      <a class="pill orange" href="index.html#request">Custom order</a>
-    </div>
-  </div>
-</header>"""
-
-
-FOOTER = """
-<footer class="ft">
-  <div class="wrap">
-    <div class="ft-top">
-      <div>
-        <img src="assets/logo-badge.png" alt="Roam Prints Studio" class="ft-logo">
-        <p>Small-batch 3D prints and custom pieces made in-house.</p>
-      </div>
-      <div class="ft-col">
-        <h4>Browse</h4>
-        <a href="index.html">Home</a>
-        <a href="shop.html">Shop</a>
-        <a href="index.html#request">Custom order</a>
-      </div>
-      <div class="ft-col">
-        <h4>Follow</h4>
-        <a href="https://www.instagram.com/roamprintsstudio" target="_blank" rel="noopener noreferrer">Instagram</a>
-        <a href="https://www.tiktok.com/@roamprints" target="_blank" rel="noopener noreferrer">TikTok</a>
-        <a href="https://www.facebook.com/Roamprintsstudio/" target="_blank" rel="noopener noreferrer">Facebook</a>
-        <a href="https://byroamprintsstudio.etsy.com" target="_blank" rel="noopener noreferrer">Etsy</a>
-      </div>
-    </div>
-    <div class="ft-bot">
-      <span>© 2026 Roam Prints Studio — a Roam Collective brand</span>
-      <span>Made to order, shipped to you</span>
-    </div>
-  </div>
-</footer>
-"""
-
-PAGE_END = """
-</body>
+{body}
 </html>"""
 
 
-def product_action(item):
-    buy_url = item.get("buy_url", "").strip()
-    if buy_url:
-        return buy_url, "Buy now"
-    return "index.html#request", "Request this print"
-
-
-def render_product_cards(items):
-    cards = []
-    for item in items:
-        href, label = product_action(item)
-        image = item.get("image", "").strip()
-        image_markup = (
-            f'<div class="pimg has-image"><img src="{escape(image, quote=True)}" alt="{escape(item["name"], quote=True)}"></div>'
-            if image
-            else f'<div class="pimg"><span>{escape(item["code"])}</span></div>'
-        )
-        cards.append(
-            f"""
-      <article class="product fade">
-        {image_markup}
-        <div class="product-body">
-          <div class="product-top">
-            <span class="product-code">{escape(item["code"])}</span>
-            <span class="product-status">{escape(item["status"])}</span>
-          </div>
-          <div>
-            <h3>{escape(item["name"])}</h3>
-            <p>{escape(item["summary"])}</p>
-          </div>
-          <div class="product-bottom">
-            <span class="product-price">{escape(item["price"])}</span>
-            <a class="pill sm orange" href="{escape(href, quote=True)}">{label}</a>
-          </div>
-        </div>
-      </article>"""
-        )
-    return "".join(cards)
-
-
-def product_grid_class(items):
-    return "shop-grid single-item" if len(items) == 1 else "shop-grid"
-
-
-REVEAL_SCRIPT = """
-<script>
-  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:0.12});
-  document.querySelectorAll('.fade').forEach(el=>io.observe(el));
-</script>"""
-
-
-HOME_JS = """
-<script type="module">
-  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:0.12});
-  document.querySelectorAll('.fade').forEach(el=>io.observe(el));
-
-  const BEHOLD_FEED_URL='https://feeds.behold.so/D0LzH9OnF470bbU27zej';
-  const ig=document.getElementById('ig');
-  function placeholders(){for(let i=0;i<6;i++){const a=document.createElement('a');a.href='https://www.instagram.com/roamprintsstudio';a.target='_blank';a.rel='noopener noreferrer';a.innerHTML=`<div class="ph">RPS / ${String(41-i).padStart(3,'0')}</div>`;ig.appendChild(a);}}
-  async function loadIG(){
-    if(!BEHOLD_FEED_URL){placeholders();return;}
-    try{
-      const r=await fetch(BEHOLD_FEED_URL); const {posts}=await r.json(); ig.innerHTML='';
-      posts.slice(0,9).forEach(p=>{const a=document.createElement('a');a.href=p.permalink;a.target='_blank';a.rel='noopener noreferrer';a.innerHTML=`<img src="${p.sizes.medium.mediaUrl}" alt="${p.prunedCaption||'Roam Prints'}" loading="lazy">`;ig.appendChild(a);});
-    }catch(e){console.warn('IG feed unavailable:',e);ig.innerHTML='';placeholders();}
-  }
-  loadIG();
-
-  const drop=document.getElementById('drop'),fileInput=document.getElementById('file'),shown=document.getElementById('fileShown'),fname=document.getElementById('fileName'),fclear=document.getElementById('fileClear');
-  drop.addEventListener('click',e=>{if(e.target!==fclear)fileInput.click()});
-  fileInput.addEventListener('change',()=>fileInput.files[0]&&show(fileInput.files[0].name));
-  ['dragover','dragenter'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('drag')}));
-  ['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('drag')}));
-  drop.addEventListener('drop',e=>{if(e.dataTransfer.files[0]){fileInput.files=e.dataTransfer.files;show(e.dataTransfer.files[0].name)}});
-  fclear.addEventListener('click',()=>{fileInput.value='';shown.classList.remove('show')});
-  function show(n){fname.textContent=n;shown.classList.add('show')}
-
-  const form=document.getElementById('quoteForm'),success=document.getElementById('success'),btn=form.querySelector('.btn-send');
-  const get=n=>form.querySelector(`[name="${n}"]`);
-  const errEl=document.createElement('p');errEl.style.cssText='display:none;color:#7a1f00;font-weight:800;font-size:14px;margin-top:14px';form.appendChild(errEl);
-  form.addEventListener('submit',async e=>{
-    e.preventDefault();
-    const req={name:get('name').value.trim(),contact:get('contact').value.trim(),description:get('description').value.trim()};
-    let ok=true;['name','contact','description'].forEach(k=>{get(k).style.borderColor=req[k]?'':'#7a1f00';if(!req[k])ok=false});
-    if(!ok){errEl.textContent='Please add your name, contact, and what you want printed.';errEl.style.display='block';return;}
-    errEl.style.display='none';btn.disabled=true;const label=btn.textContent;btn.textContent='Sending...';
-    try{
-      let fileUrl='';
-      if(fileInput.files[0]){
-        try{
-          const {upload}=await import('https://esm.sh/@vercel/blob@2.5.0/client');
-          const b=await upload(fileInput.files[0].name,fileInput.files[0],{access:'public',handleUploadUrl:'/api/blob-upload'});
-          fileUrl=b.url;
-        }catch(err){console.warn('File upload skipped:',err);}
-      }
-      const payload={...req,size:get('size').value.trim(),budget:get('budget').value,referenceLink:get('referenceLink').value.trim(),fileUrl,timeline:get('timeline').value,quantity:get('quantity').value.trim()};
-      const res=await fetch('/api/quote',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-      if(!res.ok)throw new Error('status '+res.status);
-      form.style.display='none';success.classList.add('show');success.scrollIntoView({behavior:'smooth',block:'center'});
-    }catch(err){
-      console.error(err);btn.disabled=false;btn.textContent=label;
-      errEl.textContent='Something went wrong sending your request. Please try again, or reach us on Instagram.';errEl.style.display='block';
-    }
-  });
-</script>"""
+def social_card(social):
+    return f"""
+      <a class="social-card" href="{social['url']}" target="_blank" rel="noopener noreferrer" aria-label="Open Roam Prints Studio on {social['name']} (opens in a new tab)">
+        <span class="service-mark" aria-hidden="true">{social['mark']}</span>
+        <span class="social-content">
+          <span class="social-name">{social['name']}</span>
+          <span class="social-handle">{social['handle']}</span>
+          <span class="social-note">{social['note']}</span>
+        </span>
+        <span class="arrow" aria-hidden="true">↗</span>
+      </a>"""
 
 
 def build_home():
-    preview_cards = render_product_cards(SHOP_ITEMS[:4])
-    return (
-        head(
-            "Roam Prints Studio | 3D Prints and Custom Orders",
-            "Shop small-batch 3D prints and request custom work from Roam Prints Studio.",
-            "index.html",
-            structured_data=[
-                {
-                    "@context": "https://schema.org",
-                    "@type": "Organization",
-                    "name": SITE_NAME,
-                    "url": SITE_URL,
-                    "logo": DEFAULT_OG_IMAGE,
-                    "image": DEFAULT_OG_IMAGE,
-                    "sameAs": SOCIAL_LINKS,
-                },
-                {
-                    "@context": "https://schema.org",
-                    "@type": "WebSite",
-                    "name": SITE_NAME,
-                    "url": SITE_URL,
-                },
-            ],
-        )
-        + nav("index.html")
-        + f"""
-<main id="main">
-<section class="hero" id="top">
-  <div class="wrap hero-grid">
-    <div>
-      <span class="kicker">Roam Prints Studio — Small-batch 3D prints</span>
-      <h1>Shop the drop.<br><span class="mark">Custom too.</span></h1>
-      <p class="hero-lede">Small-batch 3D prints ready to order, plus custom work when you need it.</p>
-      <div class="hero-cta">
-        <a class="pill orange" href="shop.html">Shop now</a>
-        <a class="text-link" href="#request">Request a custom print</a>
-      </div>
-      <div class="hero-meta">
-        <span>Made to order</span>
-        <span>Printed in-house</span>
-        <span>Custom capable</span>
-      </div>
+    cards = "".join(social_card(social) for social in SOCIALS)
+    body = f"""<body>
+  <a class="skip-link" href="#socials">Skip to social links</a>
+  <header class="masthead">
+    <div class="shell nav">
+      <a class="brand" href="/" aria-label="Roam Prints Studio home"><img src="assets/rp-mark-light.png" alt="">ROAM PRINTS STUDIO</a>
+      <a class="nav-link" href="#contact">Partnerships ↘</a>
     </div>
-    <div class="hero-card fade">
-      <div class="hero-card-media logo-panel">
-        <img src="assets/hero-logo.png" alt="Roam Prints logo">
-      </div>
-      <div class="hero-card-copy solo">
-        <span>Shop + custom</span>
-      </div>
-      <div class="hero-card-tags">
-        <span>Small-batch</span>
-        <span>In-house</span>
-        <span>Ships out</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="catalog" id="preview">
-  <div class="wrap">
-    <div class="section-head fade">
-      <h2>Featured item</h2>
-      <p>Available now.</p>
-    </div>
-    <div class="{product_grid_class(SHOP_ITEMS[:4])}">{preview_cards}
-    </div>
-    <div class="section-cta fade">
-      <a class="pill orange" href="shop.html">View the full shop</a>
-    </div>
-  </div>
-</section>
-
-<section class="work" id="work">
-  <div class="wrap">
-    <div class="work-head fade">
-      <h2>Recent work</h2>
-      <span class="sub">Straight from @roamprintsstudio</span>
-    </div>
-    <div class="ig fade" id="ig"></div>
-    <div class="work-foot fade">
-      <span class="note">See more on Instagram.</span>
-      <div class="work-socials">
-        <a class="pill line" href="https://www.instagram.com/roamprintsstudio" target="_blank" rel="noopener noreferrer">Follow @roamprintsstudio &rarr;</a>
-        <a class="pill line sm" href="https://www.tiktok.com/@roamprints" target="_blank" rel="noopener noreferrer">TikTok</a>
-        <a class="pill line sm" href="https://www.facebook.com/Roamprintsstudio/" target="_blank" rel="noopener noreferrer">Facebook</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="req" id="request">
-  <div class="wrap req-grid">
-    <div class="fade">
-      <h2>Need a custom print?<br>Let's make it.</h2>
-      <p class="blurb">Want a custom piece or a variation on an item? Tell us what you need and we'll send a <b>quote</b>.</p>
-      <p class="req-note">Mention the item name if you want a custom version.</p>
-    </div>
-    <div class="fade">
-      <form id="quoteForm" novalidate>
-        <div class="row2">
-          <div class="field"><label>Name <span class="req-star">*</span></label><input type="text" name="name" placeholder="Your name" required></div>
-          <div class="field"><label>Email or phone <span class="req-star">*</span></label><input type="text" name="contact" placeholder="So we can reach you" required></div>
+    <div class="shell hero">
+      <div>
+        <span class="eyebrow">3D prints, in motion</span>
+        <h1>FOLLOW<br>THE <em>BUILD.</em></h1>
+        <p class="hero-copy">Experiments, printer chaos, and things we are genuinely excited to make. Find Roam Prints wherever you scroll.</p>
+        <div class="hero-actions">
+          <a class="button" href="#socials">Pick a platform <span aria-hidden="true">↓</span></a>
+          <a class="quiet-link" href="mailto:{EMAIL}">Work with us</a>
         </div>
-        <div class="field"><label>What are you looking to print? <span class="req-star">*</span></label><textarea name="description" placeholder="Include the item name if this is a variation, or describe the custom idea from scratch." required></textarea></div>
-        <div class="row2">
-          <div class="field"><label>What size do you need?</label><input type="text" name="size" placeholder="e.g. 120 x 80 x 40 mm, or 'palm-sized'"></div>
-          <div class="field"><label>Budget</label><select name="budget"><option value="">Select a range</option><option>Under $25</option><option>$25 - $75</option><option>$75 - $150</option><option>$150 - $300</option><option>$300+</option><option>Not sure yet</option></select></div>
-        </div>
-        <div class="field">
-          <label>File or reference picture</label>
-          <div class="drop" id="drop">
-            <input type="file" id="file" name="reference" accept=".stl,.3mf,.step,.stp,.obj,.png,.jpg,.jpeg,.webp,.pdf" hidden>
-            <div class="m"><b>Click to upload</b> or drag a file in</div>
-            <div class="s">STL / 3MF / STEP / OBJ / or an image - up to 50 MB</div>
-            <div class="f" id="fileShown"><span id="fileName"></span><button type="button" id="fileClear">x</button></div>
-          </div>
-          <div class="or">OR</div>
-          <input type="url" name="referenceLink" placeholder="Paste a link (Drive, Dropbox, Thingiverse, image URL)...">
-        </div>
-        <div class="row2">
-          <div class="field"><label>Timeline</label><select name="timeline"><option value="">When do you need it?</option><option>No rush</option><option>Within 2 weeks</option><option>Within a week</option><option>ASAP</option></select></div>
-          <div class="field"><label>Quantity</label><input type="text" name="quantity" placeholder="e.g. 1, or a batch of 10"></div>
-        </div>
-        <div class="submit">
-          <span class="small-note">We read every request personally.</span>
-          <button type="submit" class="btn-send">Send it over &rarr;</button>
-        </div>
-      </form>
-      <div class="success" id="success"><div class="x">&#10003;</div><h3>Got it.</h3><p>Your request is in. Expect a quote and turnaround from us shortly.</p></div>
+      </div>
+      <figure class="art-card">
+        <img src="assets/og-social-hub.png" alt="A sculptural 3D printed object surrounded by orange filament.">
+        <figcaption><strong>Made layer by layer.</strong><span>Roam Prints<br>Studio</span></figcaption>
+      </figure>
     </div>
-  </div>
-</section>
-</main>
-"""
-        + FOOTER
-        + HOME_JS
-        + PAGE_END
+  </header>
+  <div class="marquee" aria-hidden="true"><div class="marquee-track">
+    <span>Print</span><b>✦</b><span>Roam</span><b>✦</b><span>Repeat</span><b>✦</b><span>Print</span><b>✦</b><span>Roam</span><b>✦</b><span>Repeat</span><b>✦</b>
+    <span>Print</span><b>✦</b><span>Roam</span><b>✦</b><span>Repeat</span><b>✦</b><span>Print</span><b>✦</b><span>Roam</span><b>✦</b><span>Repeat</span><b>✦</b>
+  </div></div>
+  <main>
+    <section class="social-section" id="socials">
+      <div class="shell">
+        <div class="section-heading">
+          <div><span class="eyebrow">Choose your feed</span><h2>Same studio.<br>Different corners.</h2></div>
+          <p class="section-note">Four places to keep up with what is coming off the printer next.</p>
+        </div>
+        <div class="social-grid">{cards}
+        </div>
+      </div>
+    </section>
+    <section class="contact-section" id="contact">
+      <div class="shell contact-card">
+        <div><span class="eyebrow">Partnerships + brand work</span><h2>Got an idea worth making?</h2></div>
+        <div class="contact-copy">
+          <p>For collaborations, brand partnerships, and press, send us a note. We would love to hear what you are thinking.</p>
+          <a class="email-link" href="mailto:{EMAIL}">{EMAIL}<span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="footer"><div class="shell footer-inner"><span>© {date.today().year} Roam Prints Studio</span><a href="#socials">Find us online ↑</a></div></footer>
+</body>"""
+    return document(
+        "Roam Prints Studio — Follow the Build",
+        "Find Roam Prints Studio on Instagram, TikTok, YouTube, and Facebook. For partnerships and brand work, get in touch.",
+        body,
     )
 
 
-def build_shop():
-    return (
-        head(
-            "Shop 3D Prints | Roam Prints Studio",
-            "Shop small-batch 3D prints from Roam Prints Studio and request custom versions when needed.",
-            "shop.html",
-            structured_data=[
-                {
-                    "@context": "https://schema.org",
-                    "@type": "CollectionPage",
-                    "name": f"Shop | {SITE_NAME}",
-                    "url": canonical_url("shop.html"),
-                    "description": "Shop small-batch 3D prints from Roam Prints Studio.",
-                    "mainEntity": {
-                        "@type": "ItemList",
-                        "itemListElement": [
-                            {
-                                "@type": "ListItem",
-                                "position": idx,
-                                "url": canonical_url("shop.html"),
-                                "item": product_schema(item, "shop.html", include_context=False),
-                            }
-                            for idx, item in enumerate(SHOP_ITEMS, start=1)
-                        ],
-                    },
-                }
-            ],
-        )
-        + nav("shop.html")
-        + f"""
-<main id="main">
-<section class="page-hero">
-  <div class="wrap page-hero-grid">
-    <div>
-      <span class="kicker">Roam Prints Studio — Shop</span>
-      <h1>Shop now.<br><span class="mark">Custom too.</span></h1>
-      <p class="hero-lede">Ready-to-order prints with custom options available.</p>
-      <div class="hero-cta">
-        <a class="pill orange" href="#catalog">Browse items</a>
-        <a class="text-link" href="index.html#request">Need something custom?</a>
-      </div>
-    </div>
-    <aside class="summary-card fade">
-      <h3>Buy now. Request custom.</h3>
-      <p>Checkout live items here or send a custom order request.</p>
-      <div class="summary-list">
-        <span>Ready to buy</span>
-        <span>Custom orders</span>
-        <span>Small-batch</span>
-      </div>
-    </aside>
-  </div>
-</section>
-
-<section class="catalog" id="catalog">
-  <div class="wrap">
-    <div class="section-head fade">
-      <h2>Shop</h2>
-    </div>
-    <p class="catalog-note fade">Want a custom version? Mention the item name in your request.</p>
-    <div class="{product_grid_class(SHOP_ITEMS)}">{render_product_cards(SHOP_ITEMS)}
-    </div>
-  </div>
-</section>
-</main>
-"""
-        + FOOTER
-        + REVEAL_SCRIPT
-        + PAGE_END
-    )
-
-
-def build_redirect(label):
-    return (
-        head(
-            f"{label} — Roam Prints Studio",
-            f"Browse current Roam Prints Studio items in the main shop.",
-            "shop.html",
-            extra_head='<meta http-equiv="refresh" content="0; url=shop.html">',
-            robots="noindex,follow",
-        )
-        + f"""
-<main id="main">
-<section class="redirect-page">
-  <div class="wrap">
-    <div class="redirect-card">
-      <span class="kicker">Roam Prints Studio</span>
-      <h1>Shop all items.</h1>
-      <p>Browse current items in the main shop.</p>
-      <div class="hero-cta">
-        <a class="pill orange" href="shop.html">Go to the shop</a>
-        <a class="text-link" href="index.html">Back home</a>
-      </div>
-    </div>
-  </div>
-</section>
-</main>
-"""
-        + FOOTER
-        + PAGE_END
-    )
-
-
-def write_file(path, contents):
-    path.write_text(contents, encoding="utf-8")
-
-
-def build_robots():
-    return f"""User-agent: *
-Allow: /
-
-Sitemap: {SITE_URL}/sitemap.xml
-"""
+def build_redirect():
+    body = """<body><main><p>This page has moved. <a href="/">Go to Roam Prints Studio.</a></p></main></body>"""
+    page = document("Roam Prints Studio", "Find Roam Prints Studio online.", body, robots="noindex,follow")
+    return page.replace("</head>", '  <meta http-equiv="refresh" content="0; url=/">\n</head>')
 
 
 def build_sitemap():
     today = date.today().isoformat()
-    entries = [
-        (canonical_url("index.html"), "weekly", "1.0"),
-        (canonical_url("shop.html"), "weekly", "0.9"),
-    ]
-    body = "\n".join(
-        f"""  <url>
-    <loc>{escape(loc)}</loc>
-    <lastmod>{today}</lastmod>
-    <changefreq>{freq}</changefreq>
-    <priority>{priority}</priority>
-  </url>"""
-        for loc, freq, priority in entries
-    )
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-{body}
+  <url>
+    <loc>{SITE_URL}/</loc>
+    <lastmod>{today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
 </urlset>
 """
 
 
-write_file(OUT / "index.html", build_home())
-write_file(OUT / "shop.html", build_shop())
-for slug, label in LEGACY_REDIRECTS.items():
-    write_file(OUT / slug, build_redirect(label))
-write_file(OUT / "robots.txt", build_robots())
-write_file(OUT / "sitemap.xml", build_sitemap())
+def write_file(filename, contents):
+    (OUT / filename).write_text(contents, encoding="utf-8")
 
-print("Built:", sorted(p.name for p in OUT.iterdir()))
+
+write_file("index.html", build_home())
+for filename in LEGACY_PAGES:
+    write_file(filename, build_redirect())
+write_file("robots.txt", f"User-agent: *\nAllow: /\n\nSitemap: {SITE_URL}/sitemap.xml\n")
+write_file("sitemap.xml", build_sitemap())
+print("Built social hub and legacy redirects.")
