@@ -153,58 +153,43 @@ h1 { max-width: 710px; margin-top: 24px; font: 400 clamp(84px, 12.4vw, 180px)/.7
 .scroll-hint::after { content: ""; width: 40px; height: 1px; background: currentColor; animation: nudge 1.5s ease-in-out infinite; }
 @keyframes nudge { 50% { transform: translateX(11px); } }
 
-/* Statement */
-.ticker { overflow: hidden; background: var(--orange); color: var(--black); white-space: nowrap; }
-.ticker-track { display: inline-flex; align-items: center; gap: 30px; min-width: max-content; padding: 15px 0 16px; animation: ticker 26s linear infinite; }
-.ticker span { font: 400 19px/1 var(--display); letter-spacing: .04em; text-transform: uppercase; }
-.ticker b { font: 500 13px/1 var(--mono); }
-@keyframes ticker { to { transform: translateX(-50%); } }
-.manifesto { padding: clamp(100px, 15vw, 190px) 0; background: var(--white); color: var(--black); }
-.manifesto-grid { display: grid; grid-template-columns: .62fr 1.38fr; gap: 40px; }
-.manifesto-side { display: flex; flex-direction: column; justify-content: space-between; min-height: 290px; }
-.manifesto-side p { max-width: 210px; color: #645e56; font-size: 13px; line-height: 1.65; }
-.orange-dot { display: grid; width: 42px; height: 42px; place-items: center; border-radius: 50%; background: var(--orange); color: var(--black); font: 500 11px/1 var(--mono); }
-.manifesto h2 { max-width: 840px; font: 400 clamp(56px, 9.4vw, 132px)/.78 var(--display); letter-spacing: -.035em; text-transform: uppercase; }
-.manifesto h2 em { color: var(--orange); font-style: normal; }
-.manifesto h2 span { display: inline-block; margin-left: .06em; -webkit-text-stroke: 1px var(--black); color: transparent; }
-
-/* Social deck */
-.social-section { position: relative; padding: clamp(96px, 12vw, 155px) 0; background: var(--black); overflow: hidden; }
-.social-section::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, transparent 49.94%, rgba(247, 244, 238, .04) 50%, transparent 50.06%); }
-.section-top { display: flex; align-items: end; justify-content: space-between; gap: 30px; margin-bottom: 50px; }
-.section-top h2 { margin-top: 20px; font: 400 clamp(62px, 9.5vw, 132px)/.78 var(--display); letter-spacing: -.035em; text-transform: uppercase; }
-.section-top p { max-width: 295px; color: var(--white-dim); font-size: 13px; line-height: 1.65; }
-.social-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
-.social-card { --rx: 0deg; --ry: 0deg; position: relative; min-height: 330px; overflow: hidden; display: flex; flex-direction: column; padding: 24px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: rgba(255, 255, 255, .02); transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry)); transform-style: preserve-3d; transition: background .32s ease, border-color .32s ease, transform .13s ease; }
-.social-card::before { content: ""; position: absolute; right: -13%; bottom: -46%; width: 240px; aspect-ratio: 1; border: 1px solid rgba(255, 90, 30, .62); border-radius: 50%; box-shadow: 0 0 50px rgba(255, 90, 30, .13); transform: scale(.52); transition: transform .58s cubic-bezier(.2, .8, .2, 1), background .3s ease; }
-.social-card::after { content: ""; position: absolute; right: 0; bottom: 0; left: 0; height: 4px; background: var(--orange); transform: scaleX(0); transform-origin: left; transition: transform .32s ease; }
+/* Social hub */
+.social-section { position: relative; padding: clamp(76px, 10vw, 124px) 0; background: var(--black); overflow: hidden; }
+.social-section::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(700px circle at 100% 0, rgba(255, 90, 30, .1), transparent 66%); }
+.section-top { position: relative; display: flex; align-items: end; justify-content: space-between; gap: 30px; max-width: 900px; margin: 0 auto 31px; }
+.section-top h2 { margin-top: 17px; font: 400 clamp(56px, 8vw, 105px)/.8 var(--display); letter-spacing: -.025em; text-transform: uppercase; }
+.section-top p { max-width: 265px; color: var(--white-dim); font-size: 14px; line-height: 1.55; }
+.social-grid { position: relative; display: grid; gap: 12px; max-width: 900px; margin: 0 auto; }
+.social-card { --rx: 0deg; --ry: 0deg; position: relative; min-height: 104px; display: flex; align-items: center; gap: 18px; overflow: hidden; padding: 16px 20px; border: 1px solid var(--line); background: rgba(255, 255, 255, .025); transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry)); transform-style: preserve-3d; transition: background .28s ease, border-color .28s ease, transform .13s ease; }
+.social-card::before { content: ""; position: absolute; right: -28px; width: 160px; aspect-ratio: 1; border: 1px solid rgba(255, 90, 30, .55); border-radius: 50%; opacity: 0; transform: scale(.7); transition: opacity .3s ease, transform .45s cubic-bezier(.2, .8, .2, 1); }
+.social-card::after { content: ""; position: absolute; bottom: 0; left: 0; height: 3px; width: 100%; background: var(--orange); transform: scaleX(0); transform-origin: left; transition: transform .3s ease; }
 .social-card:hover, .social-card:focus-visible { background: #151310; border-color: rgba(255, 90, 30, .75); outline: none; }
-.social-card:hover::before, .social-card:focus-visible::before { transform: scale(1.14); background: rgba(255, 90, 30, .06); }
+.social-card:hover::before, .social-card:focus-visible::before { opacity: 1; transform: scale(1); }
 .social-card:hover::after, .social-card:focus-visible::after { transform: scaleX(1); }
 .card-top, .card-body, .card-bottom { position: relative; z-index: 1; }
-.card-top { display: flex; align-items: start; justify-content: space-between; }
-.card-index { color: #8e877d; font: 500 10px/1 var(--mono); letter-spacing: .12em; }
-.service-mark { position: relative; display: grid; width: 54px; height: 54px; place-items: center; overflow: hidden; border: 1px solid rgba(247, 244, 238, .6); color: var(--white); font: 500 13px/1 var(--mono); letter-spacing: -.08em; transition: background .25s ease, color .25s ease, border-color .25s ease; }
+.card-top { display: flex; align-items: center; }
+.card-index { display: none; }
+.service-mark { position: relative; display: grid; width: 58px; height: 58px; place-items: center; overflow: hidden; border: 1px solid rgba(247, 244, 238, .6); color: var(--white); font: 500 13px/1 var(--mono); letter-spacing: -.08em; transition: background .25s ease, color .25s ease, border-color .25s ease; }
 .service-mark svg { width: 100% !important; height: 100% !important; }
 .mark-fallback { position: absolute; inset: 0; display: grid; place-items: center; transition: opacity .15s ease; }
 .service-mark.lottie-ready .mark-fallback { opacity: 0; }
 .social-card:hover .service-mark, .social-card:focus-visible .service-mark { border-color: var(--orange); background: rgba(255, 90, 30, .12); color: var(--orange-hot); }
-.card-body { margin-top: auto; }
-.social-name { display: block; font: 400 clamp(44px, 5vw, 70px)/.8 var(--display); letter-spacing: -.025em; text-transform: uppercase; }
-.social-handle { display: block; margin-top: 13px; color: var(--orange-hot); font: 500 11px/1.3 var(--mono); letter-spacing: .04em; }
-.card-description { max-width: 360px; margin-top: 18px; color: var(--white-dim); font-size: 13px; line-height: 1.55; }
-.card-bottom { display: flex; align-items: end; justify-content: space-between; margin-top: 24px; color: var(--white); font: 500 10px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; }
-.card-arrow { color: var(--orange-hot); font: 400 30px/.5 var(--display); transition: transform .25s ease; }
+.card-body { display: grid; gap: 6px; }
+.social-name { display: block; font: 400 clamp(31px, 4vw, 48px)/.8 var(--display); letter-spacing: -.015em; text-transform: uppercase; }
+.social-handle { display: block; color: var(--white-dim); font: 500 11px/1.2 var(--mono); letter-spacing: .02em; }
+.card-description { display: none; }
+.card-bottom { display: flex; align-items: center; margin-left: auto; color: var(--white); }
+.card-arrow { color: var(--orange-hot); font: 400 36px/.5 var(--display); transition: transform .25s ease; }
 .social-card:hover .card-arrow, .social-card:focus-visible .card-arrow { transform: translate(5px, -5px); }
 
 /* Contact */
-.contact { position: relative; overflow: hidden; padding: clamp(105px, 15vw, 190px) 0 0; background: var(--orange); color: var(--black); }
-.contact::before { content: ""; position: absolute; right: -20vw; top: -38vw; width: 68vw; aspect-ratio: 1; border-radius: 50%; border: clamp(40px, 7vw, 110px) solid rgba(247, 244, 238, .28); transform: rotate(-18deg); }
-.contact-grid { position: relative; display: grid; grid-template-columns: 1.15fr .85fr; gap: 50px; align-items: end; padding-bottom: clamp(105px, 14vw, 170px); }
-.contact h2 { max-width: 760px; margin-top: 21px; font: 400 clamp(76px, 12.2vw, 168px)/.74 var(--display); letter-spacing: -.035em; text-transform: uppercase; }
-.contact-copy { position: relative; z-index: 1; }
-.contact-copy p { max-width: 380px; color: #3c190d; font-size: 15px; line-height: 1.65; }
-.email-link { display: inline-flex; align-items: baseline; gap: 12px; max-width: 100%; margin-top: 28px; border-bottom: 2px solid currentColor; padding-bottom: 5px; overflow-wrap: anywhere; font: 400 clamp(19px, 2.1vw, 29px)/1.2 var(--display); letter-spacing: -.025em; text-transform: uppercase; transition: color .2s ease; }
+.contact { position: relative; overflow: hidden; padding: 70px 0 0; background: var(--orange); color: var(--black); }
+.contact::before { content: ""; position: absolute; right: -8vw; top: -23vw; width: min(43vw, 530px); aspect-ratio: 1; border-radius: 50%; border: clamp(28px, 4vw, 62px) solid rgba(247, 244, 238, .28); }
+.contact-grid { position: relative; display: flex; align-items: end; justify-content: space-between; gap: 32px; padding-bottom: 72px; }
+.contact h2 { margin-top: 14px; font: 400 clamp(54px, 8.4vw, 100px)/.78 var(--display); letter-spacing: -.025em; text-transform: uppercase; }
+.contact-copy { position: relative; z-index: 1; text-align: right; }
+.contact-copy p { color: #3c190d; font: 700 11px/1.4 var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+.email-link { display: inline-flex; align-items: baseline; gap: 12px; max-width: 100%; margin-top: 18px; border-bottom: 2px solid currentColor; padding-bottom: 5px; overflow-wrap: anywhere; font: 400 clamp(19px, 2.1vw, 29px)/1.2 var(--display); letter-spacing: -.015em; text-transform: uppercase; transition: color .2s ease; }
 .email-link:hover { color: var(--white); }
 .contact-foot { position: relative; z-index: 1; border-top: 1px solid rgba(8, 8, 8, .22); padding: 22px 0 25px; }
 .contact-foot-inner { display: flex; justify-content: space-between; gap: 20px; color: #4b2112; font: 500 10px/1.45 var(--mono); letter-spacing: .1em; text-transform: uppercase; }
@@ -224,13 +209,11 @@ h1 { max-width: 710px; margin-top: 24px; font: 400 clamp(84px, 12.4vw, 180px)/.7
   .orbit { width: min(77vw, 420px); }
   .stage-label { right: 0; bottom: 0; }
   .scroll-hint { display: none; }
-  .manifesto-grid, .contact-grid { grid-template-columns: 1fr; }
-  .manifesto-side { min-height: auto; gap: 44px; }
   .section-top { display: block; }
   .section-top p { margin-top: 26px; }
-  .social-grid { grid-template-columns: 1fr; }
-  .social-card { min-height: 290px; }
-  .contact-copy { margin-top: 15px; }
+  .social-card { min-height: 94px; }
+  .contact-grid { display: block; }
+  .contact-copy { margin-top: 32px; text-align: left; }
   .contact-foot-inner { flex-direction: column; }
 }
 @media (max-width: 430px) {
@@ -239,7 +222,8 @@ h1 { max-width: 710px; margin-top: 24px; font: 400 clamp(84px, 12.4vw, 180px)/.7
   .nav-pill { padding: 9px 10px; }
   .hero-meta { gap: 14px; }
   .hero-stage { min-height: 305px; }
-  .social-card { min-height: 274px; }
+  .social-card { gap: 14px; padding: 14px; }
+  .service-mark { width: 50px; height: 50px; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -367,9 +351,9 @@ SCRIPT = r"""
 def social_card(social):
     return f"""
       <a class="social-card" data-tilt href="{social['url']}" target="_blank" rel="noopener noreferrer" aria-label="Open Roam Prints Studio on {social['name']} (opens in a new tab)">
-        <span class="card-top"><span class="card-index">{social['index']} / 04</span><span class="service-mark" data-lottie="{social['icon']}" aria-hidden="true"><span class="mark-fallback">{social['mark']}</span></span></span>
-        <span class="card-body"><span class="social-name">{social['name']}</span><span class="social-handle">{social['handle']}</span><span class="card-description">{social['description']}</span></span>
-        <span class="card-bottom"><span>Open feed</span><span class="card-arrow" aria-hidden="true">↗</span></span>
+        <span class="card-top"><span class="service-mark" data-lottie="{social['icon']}" aria-hidden="true"><span class="mark-fallback">{social['mark']}</span></span></span>
+        <span class="card-body"><span class="social-name">{social['name']}</span><span class="social-handle">{social['handle']}</span></span>
+        <span class="card-bottom"><span class="card-arrow" aria-hidden="true">↗</span></span>
       </a>"""
 
 
@@ -424,43 +408,38 @@ def build_home():
     <canvas id="filament-field" aria-hidden="true"></canvas>
     <nav class="shell nav" aria-label="Main navigation">
       <a class="brand" href="/" aria-label="Roam Prints Studio home"><img src="assets/rp-mark-light.png" alt="">ROAM PRINTS / STUDIO</a>
-      <div class="nav-links"><a href="#socials">Socials</a><a class="nav-pill" href="#contact">Work with us ↗</a></div>
+      <div class="nav-links"><a class="nav-pill" href="#contact">Contact ↗</a></div>
     </nav>
     <div class="shell hero-main">
       <div class="hero-copy">
-        <span class="eyebrow">3D prints in motion</span>
-        <h1 aria-label="Print what moves you"><span class="hero-word"><span>Print</span></span><span class="hero-word"><span>What</span></span><span class="hero-word"><span>Moves you.</span></span></h1>
-        <p class="hero-lede">A little printer obsession, an ever-growing pile of ideas, and the things worth sharing once they come off the plate.</p>
-        <div class="hero-actions"><a class="button" data-magnetic href="#socials">Explore the feeds <span aria-hidden="true">↓</span></a><a class="text-link" href="mailto:{EMAIL}">Bring us an idea</a></div>
-        <div class="hero-meta"><span><b>04</b> channels</span><span><b>∞</b> things to make</span><span><b>EST.</b> in the studio</span></div>
+        <span class="eyebrow">Roam Prints Studio</span>
+        <h1 aria-label="Follow Roam Prints"><span class="hero-word"><span>Follow</span></span><span class="hero-word"><span>Roam Prints.</span></span></h1>
+        <p class="hero-lede">Follow our latest 3D prints, builds, and behind-the-scenes moments.</p>
+        <div class="hero-actions"><a class="button" data-magnetic href="#socials">Choose a platform <span aria-hidden="true">↓</span></a><a class="text-link" href="mailto:{EMAIL}">Partnerships</a></div>
+        <div class="hero-meta"><span><b>Instagram</b></span><span><b>TikTok</b></span><span><b>YouTube</b></span><span><b>Facebook</b></span></div>
       </div>
       <div class="hero-stage" aria-hidden="true">
         <div class="orbit"><span class="thread"></span><span class="thread"></span><span class="thread"></span><span class="thread"></span><div class="print-core"><b>3D</b></div></div>
-        <div class="stage-label"><span>Layer by layer</span><strong>Follow the build</strong></div>
+        <div class="stage-label"><span>Roam Prints</span><strong>Follow along</strong></div>
       </div>
     </div>
-    <div class="scroll-hint" aria-hidden="true">Scroll to roam</div>
+    <div class="scroll-hint" aria-hidden="true">Choose a feed</div>
   </header>
-  <div class="ticker" aria-hidden="true"><div class="ticker-track"><span>Print</span><b>✦</b><span>Roam</span><b>✦</b><span>Repeat</span><b>✦</b><span>Built one layer at a time</span><b>✦</b><span>Print</span><b>✦</b><span>Roam</span><b>✦</b><span>Repeat</span><b>✦</b><span>Built one layer at a time</span><b>✦</b></div></div>
   <main>
-    <section class="manifesto"><div class="shell manifesto-grid" data-reveal>
-      <div class="manifesto-side"><span class="orange-dot" aria-hidden="true">RP</span><p class="mono">The good bits live in the process: an idea, a spool, a late-night tweak, a better version.</p></div>
-      <h2>MAKE IT.<br><em>BREAK IT.</em><br><span>MAKE IT BETTER.</span></h2>
-    </div></section>
     <section class="social-section" id="socials"><div class="shell">
-      <div class="section-top" data-reveal><div><span class="eyebrow">Choose a corner</span><h2>Follow<br>the build.</h2></div><p>Different feeds. Same workshop energy. Pick a platform and see what Roam Prints is making next.</p></div>
+      <div class="section-top" data-reveal><div><span class="eyebrow">Find us online</span><h2>Choose<br>your feed.</h2></div><p>Pick a platform to follow Roam Prints.</p></div>
       <div class="social-grid">{cards}</div>
     </div></section>
     <section class="contact" id="contact"><div class="shell contact-grid" data-reveal>
-      <div><span class="eyebrow">Partnerships / brand work</span><h2>Make it<br>move.</h2></div>
-      <div class="contact-copy"><p>Have a collaboration, a wild idea, or a brand that belongs somewhere near a printer? Let’s talk about it.</p><a class="email-link" href="mailto:{EMAIL}">{EMAIL}<span aria-hidden="true">↗</span></a></div>
+      <div><span class="eyebrow">Partnerships + brand work</span><h2>Let’s talk.</h2></div>
+      <div class="contact-copy"><p>For collaborations and brand partnerships</p><a class="email-link" href="mailto:{EMAIL}">{EMAIL}<span aria-hidden="true">↗</span></a></div>
     </div><footer class="contact-foot"><div class="shell contact-foot-inner"><span>© {date.today().year} Roam Prints Studio</span><a href="#socials">Back to the feeds ↑</a></div></footer></section>
   </main>
 {SCRIPT}
 </body>"""
     return document(
-        "Roam Prints Studio — Follow the Build",
-        "Follow Roam Prints Studio across Instagram, TikTok, YouTube, and Facebook. For brand partnerships and collaborations, get in touch.",
+        "Roam Prints Studio — Follow Roam Prints",
+        "Follow Roam Prints Studio on Instagram, TikTok, YouTube, and Facebook. For partnerships, get in touch.",
         body,
     )
 
