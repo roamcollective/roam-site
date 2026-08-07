@@ -144,9 +144,8 @@ h1 { max-width: 710px; margin-top: 24px; font: 400 clamp(84px, 12.4vw, 180px)/.7
 .thread:nth-child(2) { top: 30%; transform: rotate(31deg) skewX(-17deg); opacity: .62; }
 .thread:nth-child(3) { top: 35%; transform: rotate(48deg) skewX(-17deg); opacity: .38; }
 .thread:nth-child(4) { top: 40%; transform: rotate(65deg) skewX(-17deg); opacity: .2; }
-.print-core { position: absolute; inset: 29%; display: grid; place-items: center; border-radius: 33% 67% 59% 41% / 50% 40% 60% 50%; background: linear-gradient(145deg, #fcf7ee, #aaa297); color: var(--black); box-shadow: 0 24px 55px rgba(0, 0, 0, .7), inset -18px -16px 28px rgba(0, 0, 0, .17); transform: rotate(-12deg); }
-.print-core::before { content: ""; position: absolute; inset: 11%; border: 1px solid rgba(8, 8, 8, .22); border-radius: inherit; background: repeating-linear-gradient(174deg, transparent 0 4px, rgba(8, 8, 8, .16) 5px 6px); }
-.print-core b { position: relative; font: 400 clamp(42px, 7vw, 92px)/.8 var(--display); letter-spacing: -.04em; }
+.logo-core { position: absolute; inset: 20%; overflow: hidden; border-radius: 50%; background: var(--black); box-shadow: 0 24px 55px rgba(0, 0, 0, .72), 0 0 0 1px rgba(255, 90, 30, .35); transform: rotate(-7deg); }
+.logo-core img { width: 100%; height: 100%; object-fit: cover; }
 .stage-label { position: absolute; right: 4%; bottom: 7%; display: grid; gap: 9px; padding: 12px 0; border-top: 1px solid var(--line); color: var(--white-dim); font: 500 9px/1.4 var(--mono); letter-spacing: .12em; text-align: right; text-transform: uppercase; }
 .stage-label strong { color: var(--white); font-weight: 500; }
 .scroll-hint { position: absolute; bottom: 26px; left: 50%; display: flex; align-items: center; gap: 9px; color: #857e74; font: 500 9px/1 var(--mono); letter-spacing: .15em; text-transform: uppercase; transform: translateX(-50%); }
@@ -419,7 +418,7 @@ def build_home():
         <div class="hero-meta"><span><b>Instagram</b></span><span><b>TikTok</b></span><span><b>YouTube</b></span><span><b>Facebook</b></span></div>
       </div>
       <div class="hero-stage" aria-hidden="true">
-        <div class="orbit"><span class="thread"></span><span class="thread"></span><span class="thread"></span><span class="thread"></span><div class="print-core"><b>RP</b></div></div>
+        <div class="orbit"><span class="thread"></span><span class="thread"></span><span class="thread"></span><span class="thread"></span><div class="logo-core"><img src="assets/hero-logo.png" alt=""></div></div>
         <div class="stage-label"><span>Roam Prints</span><strong>Social hub</strong></div>
       </div>
     </div>
