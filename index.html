@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js" defer></script>
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Roam Prints Studio">
   <meta property="og:title" content="Roam Prints Studio — Follow the Build">
@@ -147,8 +148,11 @@ h1 { max-width: 710px; margin-top: 24px; font: 400 clamp(84px, 12.4vw, 180px)/.7
 .card-top, .card-body, .card-bottom { position: relative; z-index: 1; }
 .card-top { display: flex; align-items: start; justify-content: space-between; }
 .card-index { color: #8e877d; font: 500 10px/1 var(--mono); letter-spacing: .12em; }
-.service-mark { display: grid; width: 50px; height: 50px; place-items: center; border: 1px solid rgba(247, 244, 238, .6); color: var(--white); font: 500 13px/1 var(--mono); letter-spacing: -.08em; transition: background .25s ease, color .25s ease, border-color .25s ease; }
-.social-card:hover .service-mark, .social-card:focus-visible .service-mark { border-color: var(--orange); background: var(--orange); color: var(--black); }
+.service-mark { position: relative; display: grid; width: 54px; height: 54px; place-items: center; overflow: hidden; border: 1px solid rgba(247, 244, 238, .6); color: var(--white); font: 500 13px/1 var(--mono); letter-spacing: -.08em; transition: background .25s ease, color .25s ease, border-color .25s ease; }
+.service-mark svg { width: 100% !important; height: 100% !important; }
+.mark-fallback { position: absolute; inset: 0; display: grid; place-items: center; transition: opacity .15s ease; }
+.service-mark.lottie-ready .mark-fallback { opacity: 0; }
+.social-card:hover .service-mark, .social-card:focus-visible .service-mark { border-color: var(--orange); background: rgba(255, 90, 30, .12); color: var(--orange-hot); }
 .card-body { margin-top: auto; }
 .social-name { display: block; font: 400 clamp(44px, 5vw, 70px)/.8 var(--display); letter-spacing: -.025em; text-transform: uppercase; }
 .social-handle { display: block; margin-top: 13px; color: var(--orange-hot); font: 500 11px/1.3 var(--mono); letter-spacing: .04em; }
@@ -241,22 +245,22 @@ h1 { max-width: 710px; margin-top: 24px; font: 400 clamp(84px, 12.4vw, 180px)/.7
       <div class="section-top" data-reveal><div><span class="eyebrow">Choose a corner</span><h2>Follow<br>the build.</h2></div><p>Different feeds. Same workshop energy. Pick a platform and see what Roam Prints is making next.</p></div>
       <div class="social-grid">
       <a class="social-card" data-tilt href="https://www.instagram.com/roamprintsstudio" target="_blank" rel="noopener noreferrer" aria-label="Open Roam Prints Studio on Instagram (opens in a new tab)">
-        <span class="card-top"><span class="card-index">01 / 04</span><span class="service-mark" aria-hidden="true">IG</span></span>
+        <span class="card-top"><span class="card-index">01 / 04</span><span class="service-mark" data-lottie="assets/social-icons/instagram.json" aria-hidden="true"><span class="mark-fallback">IG</span></span></span>
         <span class="card-body"><span class="social-name">Instagram</span><span class="social-handle">@roamprintsstudio</span><span class="card-description">Fresh prints, desk-side details, and what is leaving the studio.</span></span>
         <span class="card-bottom"><span>Open feed</span><span class="card-arrow" aria-hidden="true">↗</span></span>
       </a>
       <a class="social-card" data-tilt href="https://www.tiktok.com/@roamprints" target="_blank" rel="noopener noreferrer" aria-label="Open Roam Prints Studio on TikTok (opens in a new tab)">
-        <span class="card-top"><span class="card-index">02 / 04</span><span class="service-mark" aria-hidden="true">TT</span></span>
+        <span class="card-top"><span class="card-index">02 / 04</span><span class="service-mark" data-lottie="assets/social-icons/tiktok.json" aria-hidden="true"><span class="mark-fallback">TT</span></span></span>
         <span class="card-body"><span class="social-name">TikTok</span><span class="social-handle">@roamprints</span><span class="card-description">Printer humor, experiments, and the occasional filament-fueled idea.</span></span>
         <span class="card-bottom"><span>Open feed</span><span class="card-arrow" aria-hidden="true">↗</span></span>
       </a>
       <a class="social-card" data-tilt href="https://www.youtube.com/@roamprints" target="_blank" rel="noopener noreferrer" aria-label="Open Roam Prints Studio on YouTube (opens in a new tab)">
-        <span class="card-top"><span class="card-index">03 / 04</span><span class="service-mark" aria-hidden="true">YT</span></span>
+        <span class="card-top"><span class="card-index">03 / 04</span><span class="service-mark" data-lottie="assets/social-icons/youtube.json" aria-hidden="true"><span class="mark-fallback">YT</span></span></span>
         <span class="card-body"><span class="social-name">YouTube</span><span class="social-handle">@roamprints</span><span class="card-description">Longer builds, process videos, and a closer look at the good stuff.</span></span>
         <span class="card-bottom"><span>Open feed</span><span class="card-arrow" aria-hidden="true">↗</span></span>
       </a>
       <a class="social-card" data-tilt href="https://www.facebook.com/Roamprintsstudio/" target="_blank" rel="noopener noreferrer" aria-label="Open Roam Prints Studio on Facebook (opens in a new tab)">
-        <span class="card-top"><span class="card-index">04 / 04</span><span class="service-mark" aria-hidden="true">FB</span></span>
+        <span class="card-top"><span class="card-index">04 / 04</span><span class="service-mark" data-lottie="assets/social-icons/facebook.json" aria-hidden="true"><span class="mark-fallback">FB</span></span></span>
         <span class="card-body"><span class="social-name">Facebook</span><span class="social-handle">Roam Prints Studio</span><span class="card-description">Studio updates, new work, and every place the prints end up roaming.</span></span>
         <span class="card-bottom"><span>Open feed</span><span class="card-arrow" aria-hidden="true">↗</span></span>
       </a></div>
@@ -315,6 +319,26 @@ h1 { max-width: 710px; margin-top: 24px; font: 400 clamp(84px, 12.4vw, 180px)/.7
     });
     element.addEventListener("pointerleave", () => { element.style.transform = "translate(0, 0)"; });
   });
+
+  const activateSocialIcons = () => {
+    if (!window.lottie) return;
+    document.querySelectorAll("[data-lottie]").forEach((holder) => {
+      const animation = window.lottie.loadAnimation({
+        container: holder,
+        renderer: "svg",
+        loop: false,
+        autoplay: false,
+        path: holder.dataset.lottie,
+      });
+      holder.classList.add("lottie-ready");
+      const play = () => animation.goToAndPlay(0, true);
+      const card = holder.closest(".social-card");
+      card.addEventListener("pointerenter", play);
+      card.addEventListener("focus", play);
+    });
+  };
+  if (window.lottie) activateSocialIcons();
+  else window.addEventListener("load", activateSocialIcons, { once: true });
 
   const canvas = document.querySelector("#filament-field");
   const context = canvas.getContext("2d");
