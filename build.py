@@ -21,7 +21,7 @@ SOCIALS = [
         "url": "https://www.instagram.com/roamprintsstudio",
         "mark": "IG",
         "icon": "assets/social-icons/instagram.json",
-        "description": "Fresh prints, desk-side details, and what is leaving the studio.",
+        "description": "Updates and moments from Roam Prints.",
     },
     {
         "index": "02",
@@ -30,7 +30,7 @@ SOCIALS = [
         "url": "https://www.tiktok.com/@roamprints",
         "mark": "TT",
         "icon": "assets/social-icons/tiktok.json",
-        "description": "Printer humor, experiments, and the occasional filament-fueled idea.",
+        "description": "Short-form videos and the latest from Roam Prints.",
     },
     {
         "index": "03",
@@ -39,7 +39,7 @@ SOCIALS = [
         "url": "https://www.youtube.com/@roamprints",
         "mark": "YT",
         "icon": "assets/social-icons/youtube.json",
-        "description": "Longer builds, process videos, and a closer look at the good stuff.",
+        "description": "Watch more from Roam Prints.",
     },
     {
         "index": "04",
@@ -48,7 +48,7 @@ SOCIALS = [
         "url": "https://www.facebook.com/Roamprintsstudio/",
         "mark": "FB",
         "icon": "assets/social-icons/facebook.json",
-        "description": "Studio updates, new work, and every place the prints end up roaming.",
+        "description": "Follow Roam Prints on Facebook.",
     },
 ]
 
@@ -386,7 +386,7 @@ def document(title, description, body):
   <meta property="og:image" content="{OG_IMAGE}">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Roam Prints — Follow the Build">
+  <meta property="og:image:alt" content="Roam Prints social hub">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{escape(title, quote=True)}">
   <meta name="twitter:description" content="{escape(description, quote=True)}">
@@ -414,13 +414,13 @@ def build_home():
       <div class="hero-copy">
         <span class="eyebrow">Roam Prints Studio</span>
         <h1 aria-label="Follow Roam Prints"><span class="hero-word"><span>Follow</span></span><span class="hero-word"><span>Roam Prints.</span></span></h1>
-        <p class="hero-lede">Follow our latest 3D prints, builds, and behind-the-scenes moments.</p>
+        <p class="hero-lede">Follow Roam Prints across our social channels.</p>
         <div class="hero-actions"><a class="button" data-magnetic href="#socials">Choose a platform <span aria-hidden="true">↓</span></a><a class="text-link" href="mailto:{EMAIL}">Partnerships</a></div>
         <div class="hero-meta"><span><b>Instagram</b></span><span><b>TikTok</b></span><span><b>YouTube</b></span><span><b>Facebook</b></span></div>
       </div>
       <div class="hero-stage" aria-hidden="true">
-        <div class="orbit"><span class="thread"></span><span class="thread"></span><span class="thread"></span><span class="thread"></span><div class="print-core"><b>3D</b></div></div>
-        <div class="stage-label"><span>Roam Prints</span><strong>Follow along</strong></div>
+        <div class="orbit"><span class="thread"></span><span class="thread"></span><span class="thread"></span><span class="thread"></span><div class="print-core"><b>RP</b></div></div>
+        <div class="stage-label"><span>Roam Prints</span><strong>Social hub</strong></div>
       </div>
     </div>
     <div class="scroll-hint" aria-hidden="true">Choose a feed</div>
