@@ -189,8 +189,8 @@ h1 { max-width: 710px; margin-top: 24px; font: 400 clamp(84px, 12.4vw, 180px)/.7
 .contact h2 { margin-top: 14px; font: 400 clamp(54px, 8.4vw, 100px)/.78 var(--display); letter-spacing: -.025em; text-transform: uppercase; }
 .contact-copy { position: relative; z-index: 1; text-align: right; }
 .contact-copy p { color: #3c190d; font: 700 11px/1.4 var(--mono); letter-spacing: .08em; text-transform: uppercase; }
-.email-link { display: inline-flex; align-items: baseline; gap: 12px; max-width: 100%; margin-top: 18px; border-bottom: 2px solid currentColor; padding-bottom: 5px; overflow-wrap: anywhere; font: 400 clamp(19px, 2.1vw, 29px)/1.2 var(--display); letter-spacing: -.015em; text-transform: uppercase; transition: color .2s ease; }
-.email-link:hover { color: var(--white); }
+.email-link { display: inline-flex; align-items: center; gap: 12px; margin-top: 18px; padding: 15px 18px; background: var(--black); color: var(--white); font: 800 12px/1 var(--body); letter-spacing: -.01em; transition: background .2s ease, color .2s ease, transform .2s ease; }
+.email-link:hover { background: var(--white); color: var(--black); transform: translateY(-3px); }
 .contact-foot { position: relative; z-index: 1; border-top: 1px solid rgba(8, 8, 8, .22); padding: 22px 0 25px; }
 .contact-foot-inner { display: flex; justify-content: space-between; gap: 20px; color: #4b2112; font: 500 10px/1.45 var(--mono); letter-spacing: .1em; text-transform: uppercase; }
 .contact-foot a:hover { color: var(--white); }
@@ -432,7 +432,7 @@ def build_home():
     </div></section>
     <section class="contact" id="contact"><div class="shell contact-grid" data-reveal>
       <div><span class="eyebrow">Partnerships + brand work</span><h2>Let’s talk.</h2></div>
-      <div class="contact-copy"><p>For collaborations and brand partnerships</p><a class="email-link" href="mailto:{EMAIL}">{EMAIL}<span aria-hidden="true">↗</span></a></div>
+      <div class="contact-copy"><p>For collaborations and brand partnerships</p><a class="email-link" href="mailto:{EMAIL}" aria-label="Email Roam Prints Studio to work together">Email us to work together <span aria-hidden="true">↗</span></a></div>
     </div><footer class="contact-foot"><div class="shell contact-foot-inner"><span>© {date.today().year} Roam Prints Studio</span><a href="#socials">Back to the feeds ↑</a></div></footer></section>
   </main>
 {SCRIPT}
