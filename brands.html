@@ -1,77 +1,31 @@
-#!/usr/bin/env python3
-"""Build the animated Roam Prints social landing page."""
-
-import json
-from datetime import date
-from html import escape
-from pathlib import Path
-
-
-OUT = Path(__file__).resolve().parent
-SITE_NAME = "Roam Prints Studio"
-SITE_URL = "https://www.roamprints.studio"
-EMAIL = "roamcollectivetsudio@gmail.com"
-OG_IMAGE = f"{SITE_URL}/assets/og-follow-the-brand.png"
-
-SOCIALS = [
-    {
-        "index": "01",
-        "name": "Instagram",
-        "handle": "@roamprintsstudio",
-        "url": "https://www.instagram.com/roamprintsstudio",
-        "mark": "IG",
-        "icon": "assets/social-icons/instagram.json",
-        "description": "Updates and moments from Roam Prints.",
-    },
-    {
-        "index": "02",
-        "name": "Art by Roam",
-        "handle": "@artbyroam",
-        "url": "https://www.instagram.com/artbyroam",
-        "mark": "IG",
-        "icon": "assets/social-icons/instagram.json",
-        "description": "Custom art from Art by Roam.",
-        "tag": "Custom art",
-    },
-    {
-        "index": "03",
-        "name": "TikTok",
-        "handle": "@roamprints",
-        "url": "https://www.tiktok.com/@roamprints",
-        "mark": "TT",
-        "icon": "assets/social-icons/tiktok.json",
-        "description": "Short-form videos and the latest from Roam Prints.",
-    },
-    {
-        "index": "04",
-        "name": "YouTube",
-        "handle": "@roamprints",
-        "url": "https://www.youtube.com/@roamprints",
-        "mark": "YT",
-        "icon": "assets/social-icons/youtube.json",
-        "description": "Watch more from Roam Prints.",
-    },
-    {
-        "index": "05",
-        "name": "Facebook",
-        "handle": "Roam Prints Studio",
-        "url": "https://www.facebook.com/Roamprintsstudio/",
-        "mark": "FB",
-        "icon": "assets/social-icons/facebook.json",
-        "description": "Follow Roam Prints on Facebook.",
-    },
-]
-
-LEGACY_PAGES = [
-    "shop.html",
-    "function-organizers.html",
-    "automotive.html",
-    "decor.html",
-    "keychains.html",
-]
-
-
-CSS = r"""
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Partner with Roam Prints Studio for creator-led short-form video, product storytelling, and custom-art collaborations.">
+  <link rel="canonical" href="https://www.roamprints.studio/brands.html">
+  <link rel="icon" href="/assets/favicon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js" defer></script>
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Roam Prints Studio">
+  <meta property="og:title" content="Roam Prints Studio — Brand Partnerships">
+  <meta property="og:description" content="Partner with Roam Prints Studio for creator-led short-form video, product storytelling, and custom-art collaborations.">
+  <meta property="og:url" content="https://www.roamprints.studio/brands.html">
+  <meta property="og:image" content="https://www.roamprints.studio/assets/og-follow-the-brand.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Roam Prints — Follow the brand">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Roam Prints Studio — Brand Partnerships">
+  <meta name="twitter:description" content="Partner with Roam Prints Studio for creator-led short-form video, product storytelling, and custom-art collaborations.">
+  <meta name="twitter:image" content="https://www.roamprints.studio/assets/og-follow-the-brand.png">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "name": "Roam Prints Studio", "url": "https://www.roamprints.studio", "email": "roamcollectivetsudio@gmail.com", "sameAs": ["https://www.instagram.com/roamprintsstudio", "https://www.instagram.com/artbyroam", "https://www.tiktok.com/@roamprints", "https://www.youtube.com/@roamprints", "https://www.facebook.com/Roamprintsstudio/"]}</script>
+  <title>Roam Prints Studio — Brand Partnerships</title>
+  <style>
 :root {
   --black: #080808;
   --black-soft: #11110f;
@@ -312,10 +266,52 @@ h1 { max-width: 710px; margin-top: 24px; font: 400 clamp(84px, 12.4vw, 180px)/.7
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
-"""
+</style>
+</head>
+<body>
+  <div id="scroll-progress" aria-hidden="true"></div>
+  <a class="skip-link" href="#ways-to-work">Skip to partnership options</a>
+  <header class="brands-hero">
+    <canvas id="filament-field" aria-hidden="true"></canvas>
+    <nav class="shell nav" aria-label="Main navigation">
+      <a class="brand" href="/" aria-label="Roam Prints Studio home"><img src="assets/rp-mark-light.png" alt="">ROAM PRINTS / STUDIO</a>
+      <div class="nav-links"><a class="nav-pill" href="/">Follow us ↗</a></div>
+    </nav>
+    <div class="shell brands-hero-inner">
+      <div>
+        <span class="eyebrow">Brand partnerships</span>
+        <h1>Let’s make<br><span>something<br>shareable.</span></h1>
+        <p class="brands-lede">Roam Prints creates maker-first content for the tools, ideas, and brands people want to talk about.</p>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section class="brands-intro"><div class="shell brands-intro-grid" data-reveal>
+      <div><span class="eyebrow">The fit</span><h2>Made for<br>maker culture.</h2></div>
+      <div><p class="brands-deck">We make short-form content that puts the build, the personality, and the product in the same frame.</p><p class="brands-detail">Our work is a natural fit for 3D printing, creative tools, workshop gear, and brands that want to show up in maker culture with a point of view.</p></div>
+    </div></section>
+    <section class="brand-services" id="ways-to-work"><div class="shell">
+      <div class="brand-section-head" data-reveal><div><span class="eyebrow">Ways to work together</span><h2 class="brands-section-title">Bring us<br>an idea.</h2></div><p>We shape each collaboration around the audience, the product, and a strong reason to stop scrolling.</p></div>
+      <div class="brand-service-grid">
+        <article class="brand-service" data-reveal><span class="brand-service-number">01 / PRODUCT STORY</span><h3>Product integrations.</h3><p>Bring your tool, filament, accessory, or idea into a story that feels native to the feed.</p></article>
+        <article class="brand-service" data-reveal><span class="brand-service-number">02 / SHORT-FORM</span><h3>Original video concepts.</h3><p>Creator-led vertical videos made to earn attention, spark comments, and be worth sharing.</p></article>
+        <article class="brand-service" data-reveal><span class="brand-service-number">03 / CUSTOM ART</span><h3>Creative collaborations.</h3><p>Custom-art opportunities through Art by Roam for brands that want something more distinctive.</p></article>
+      </div>
+    </div></section>
+    <section class="brand-proof"><div class="shell">
+      <span class="eyebrow">The details that matter</span><h2 class="brands-section-title">Current, not canned.</h2>
+      <div class="brand-proof-grid">
+        <article class="brand-proof-card" data-reveal><h3>Audience + performance.</h3><p>Current audience snapshots, platform performance, and campaign-fit details are shared for relevant partnership conversations.</p></article>
+        <article class="brand-proof-card" data-reveal><h3>See the work.</h3><p>Explore the current content across our channels and get a feel for the tone, concepts, and community.</p><div class="brand-work-links"><a href="https://www.tiktok.com/@roamprints" target="_blank" rel="noopener noreferrer">TikTok ↗</a><a href="https://www.instagram.com/roamprintsstudio" target="_blank" rel="noopener noreferrer">Instagram ↗</a><a href="https://www.youtube.com/@roamprints" target="_blank" rel="noopener noreferrer">YouTube ↗</a></div></article>
+      </div>
+    </div></section>
+    <section class="brand-cta"><div class="shell brand-cta-inner" data-reveal>
+      <h2>Let’s make<br><span>something move.</span></h2>
+      <div class="brand-cta-copy"><p>Tell us what you’re building. We’ll share the right audience details, recent examples, and a partnership approach tailored to the opportunity.</p><a class="email-link" href="mailto:roamcollectivetsudio@gmail.com?subject=Roam%20Prints%20media%20kit%20request">Request the media kit <span aria-hidden="true">↗</span></a></div>
+    </div></section>
+    <footer class="contact-foot"><div class="shell contact-foot-inner"><span>© 2026 Roam Prints Studio</span><a href="/">Back to social links ↑</a></div></footer>
+  </main>
 
-
-SCRIPT = r"""
 <script>
 (() => {
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -428,180 +424,6 @@ SCRIPT = r"""
   if (reduce) draw(0); else window.requestAnimationFrame(draw);
 })();
 </script>
-"""
 
-
-def social_card(social):
-    tag = f'<span class="card-tag">{escape(social["tag"])}</span>' if social.get("tag") else ""
-    return f"""
-      <a class="social-card" data-tilt href="{social['url']}" target="_blank" rel="noopener noreferrer" aria-label="Open Roam Prints Studio on {social['name']} (opens in a new tab)">
-        <span class="card-top"><span class="service-mark" data-lottie="{social['icon']}" aria-hidden="true"><span class="mark-fallback">{social['mark']}</span></span></span>
-        <span class="card-body"><span class="social-name">{social['name']}</span><span class="social-handle">{social['handle']}</span>{tag}</span>
-        <span class="card-bottom"><span class="card-arrow" aria-hidden="true">↗</span></span>
-      </a>"""
-
-
-def document(title, description, body, path="/"):
-    page_url = f"{SITE_URL}{path}"
-    schema = {
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        "name": SITE_NAME,
-        "url": SITE_URL,
-        "email": EMAIL,
-        "sameAs": [social["url"] for social in SOCIALS],
-    }
-    return f"""<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="{escape(description, quote=True)}">
-  <link rel="canonical" href="{page_url}">
-  <link rel="icon" href="/assets/favicon.png" type="image/png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js" defer></script>
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Roam Prints Studio">
-  <meta property="og:title" content="{escape(title, quote=True)}">
-  <meta property="og:description" content="{escape(description, quote=True)}">
-  <meta property="og:url" content="{page_url}">
-  <meta property="og:image" content="{OG_IMAGE}">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Roam Prints — Follow the brand">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="{escape(title, quote=True)}">
-  <meta name="twitter:description" content="{escape(description, quote=True)}">
-  <meta name="twitter:image" content="{OG_IMAGE}">
-  <script type="application/ld+json">{json.dumps(schema)}</script>
-  <title>{escape(title)}</title>
-  <style>{CSS}</style>
-</head>
-{body}
-</html>"""
-
-
-def build_home():
-    cards = "".join(social_card(social) for social in SOCIALS)
-    body = f"""<body>
-  <div id="scroll-progress" aria-hidden="true"></div>
-  <a class="skip-link" href="#socials">Skip to social links</a>
-  <header class="hero">
-    <canvas id="filament-field" aria-hidden="true"></canvas>
-    <nav class="shell nav" aria-label="Main navigation">
-      <a class="brand" href="/" aria-label="Roam Prints Studio home"><img src="assets/rp-mark-light.png" alt="">ROAM PRINTS / STUDIO</a>
-      <div class="nav-links"><a class="nav-pill" href="#contact">Contact ↗</a></div>
-    </nav>
-    <div class="shell hero-main">
-      <div class="hero-copy">
-        <span class="eyebrow">Roam Prints Studio</span>
-        <h1 aria-label="Follow Roam Prints"><span class="hero-word"><span>Follow</span></span><span class="hero-word"><span>Roam Prints.</span></span></h1>
-        <p class="hero-lede">Follow Roam Prints across our social channels.</p>
-        <div class="hero-actions"><a class="button" data-magnetic href="#socials">Choose a platform <span aria-hidden="true">↓</span></a><a class="text-link" href="brands.html">For brands</a></div>
-      </div>
-      <div class="hero-stage" aria-hidden="true">
-        <div class="orbit"><span class="thread"></span><span class="thread"></span><span class="thread"></span><span class="thread"></span><div class="logo-core"><img src="assets/hero-logo.png" alt=""></div></div>
-      </div>
-    </div>
-  </header>
-  <main>
-    <section class="social-section" id="socials"><div class="shell">
-      <div class="section-top" data-reveal><div><span class="eyebrow">Find us online</span><h2>Follow<br>along.</h2></div><p>Follow us on all platforms.</p></div>
-      <div class="social-grid">{cards}</div>
-    </div></section>
-    <section class="contact" id="contact"><div class="shell contact-grid" data-reveal>
-      <div><span class="eyebrow">Partnerships + brand work</span><h2>Let’s talk.</h2></div>
-      <div class="contact-copy"><p>For collaborations and brand partnerships</p><div class="contact-actions"><a class="email-link" href="mailto:{EMAIL}" aria-label="Email Roam Prints Studio to work together">Email us to work together <span aria-hidden="true">↗</span></a><a class="media-kit-link" href="brands.html">View media kit <span aria-hidden="true">↗</span></a></div></div>
-    </div><footer class="contact-foot"><div class="shell contact-foot-inner"><span>© {date.today().year} Roam Prints Studio</span><a href="#socials">Back to the feeds ↑</a></div></footer></section>
-  </main>
-{SCRIPT}
-</body>"""
-    return document(
-        "Roam Prints Studio — Follow Roam Prints",
-        "Follow Roam Prints Studio on Instagram, TikTok, YouTube, and Facebook. For partnerships, get in touch.",
-        body,
-    )
-
-
-def build_brands():
-    body = f"""<body>
-  <div id="scroll-progress" aria-hidden="true"></div>
-  <a class="skip-link" href="#ways-to-work">Skip to partnership options</a>
-  <header class="brands-hero">
-    <canvas id="filament-field" aria-hidden="true"></canvas>
-    <nav class="shell nav" aria-label="Main navigation">
-      <a class="brand" href="/" aria-label="Roam Prints Studio home"><img src="assets/rp-mark-light.png" alt="">ROAM PRINTS / STUDIO</a>
-      <div class="nav-links"><a class="nav-pill" href="/">Follow us ↗</a></div>
-    </nav>
-    <div class="shell brands-hero-inner">
-      <div>
-        <span class="eyebrow">Brand partnerships</span>
-        <h1>Let’s make<br><span>something<br>shareable.</span></h1>
-        <p class="brands-lede">Roam Prints creates maker-first content for the tools, ideas, and brands people want to talk about.</p>
-      </div>
-    </div>
-  </header>
-  <main>
-    <section class="brands-intro"><div class="shell brands-intro-grid" data-reveal>
-      <div><span class="eyebrow">The fit</span><h2>Made for<br>maker culture.</h2></div>
-      <div><p class="brands-deck">We make short-form content that puts the build, the personality, and the product in the same frame.</p><p class="brands-detail">Our work is a natural fit for 3D printing, creative tools, workshop gear, and brands that want to show up in maker culture with a point of view.</p></div>
-    </div></section>
-    <section class="brand-services" id="ways-to-work"><div class="shell">
-      <div class="brand-section-head" data-reveal><div><span class="eyebrow">Ways to work together</span><h2 class="brands-section-title">Bring us<br>an idea.</h2></div><p>We shape each collaboration around the audience, the product, and a strong reason to stop scrolling.</p></div>
-      <div class="brand-service-grid">
-        <article class="brand-service" data-reveal><span class="brand-service-number">01 / PRODUCT STORY</span><h3>Product integrations.</h3><p>Bring your tool, filament, accessory, or idea into a story that feels native to the feed.</p></article>
-        <article class="brand-service" data-reveal><span class="brand-service-number">02 / SHORT-FORM</span><h3>Original video concepts.</h3><p>Creator-led vertical videos made to earn attention, spark comments, and be worth sharing.</p></article>
-        <article class="brand-service" data-reveal><span class="brand-service-number">03 / CUSTOM ART</span><h3>Creative collaborations.</h3><p>Custom-art opportunities through Art by Roam for brands that want something more distinctive.</p></article>
-      </div>
-    </div></section>
-    <section class="brand-proof"><div class="shell">
-      <span class="eyebrow">The details that matter</span><h2 class="brands-section-title">Current, not canned.</h2>
-      <div class="brand-proof-grid">
-        <article class="brand-proof-card" data-reveal><h3>Audience + performance.</h3><p>Current audience snapshots, platform performance, and campaign-fit details are shared for relevant partnership conversations.</p></article>
-        <article class="brand-proof-card" data-reveal><h3>See the work.</h3><p>Explore the current content across our channels and get a feel for the tone, concepts, and community.</p><div class="brand-work-links"><a href="https://www.tiktok.com/@roamprints" target="_blank" rel="noopener noreferrer">TikTok ↗</a><a href="https://www.instagram.com/roamprintsstudio" target="_blank" rel="noopener noreferrer">Instagram ↗</a><a href="https://www.youtube.com/@roamprints" target="_blank" rel="noopener noreferrer">YouTube ↗</a></div></article>
-      </div>
-    </div></section>
-    <section class="brand-cta"><div class="shell brand-cta-inner" data-reveal>
-      <h2>Let’s make<br><span>something move.</span></h2>
-      <div class="brand-cta-copy"><p>Tell us what you’re building. We’ll share the right audience details, recent examples, and a partnership approach tailored to the opportunity.</p><a class="email-link" href="mailto:{EMAIL}?subject=Roam%20Prints%20media%20kit%20request">Request the media kit <span aria-hidden="true">↗</span></a></div>
-    </div></section>
-    <footer class="contact-foot"><div class="shell contact-foot-inner"><span>© {date.today().year} Roam Prints Studio</span><a href="/">Back to social links ↑</a></div></footer>
-  </main>
-{SCRIPT}
-</body>"""
-    return document(
-        "Roam Prints Studio — Brand Partnerships",
-        "Partner with Roam Prints Studio for creator-led short-form video, product storytelling, and custom-art collaborations.",
-        body,
-        "/brands.html",
-    )
-
-
-def build_redirect():
-    return """<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,follow"><meta http-equiv="refresh" content="0; url=/"><link rel="canonical" href="https://www.roamprints.studio/"><title>Roam Prints Studio</title></head><body><p>This page has moved. <a href="/">Go to Roam Prints Studio.</a></p></body></html>"""
-
-
-def build_sitemap():
-    today = date.today().isoformat()
-    return f"""<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>{SITE_URL}/</loc><lastmod>{today}</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>{SITE_URL}/brands.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-</urlset>
-"""
-
-
-def write_file(filename, contents):
-    (OUT / filename).write_text(contents, encoding="utf-8")
-
-
-write_file("index.html", build_home())
-write_file("brands.html", build_brands())
-for filename in LEGACY_PAGES:
-    write_file(filename, build_redirect())
-write_file("robots.txt", f"User-agent: *\nAllow: /\n\nSitemap: {SITE_URL}/sitemap.xml\n")
-write_file("sitemap.xml", build_sitemap())
-print("Built animated Roam Prints landing page.")
+</body>
+</html>
