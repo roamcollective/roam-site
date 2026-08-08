@@ -11,7 +11,7 @@ OUT = Path(__file__).resolve().parent
 SITE_NAME = "Roam Prints Studio"
 SITE_URL = "https://www.roamprints.studio"
 EMAIL = "roamcollectivetsudio@gmail.com"
-OG_IMAGE = f"{SITE_URL}/assets/og-follow-roam-prints.png"
+OG_IMAGE = f"{SITE_URL}/assets/og-follow-the-brand.png"
 
 SOCIALS = [
     {
@@ -418,7 +418,7 @@ def document(title, description, body):
   <meta property="og:image" content="{OG_IMAGE}">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Follow Roam Prints">
+  <meta property="og:image:alt" content="Roam Prints — Follow the brand">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{escape(title, quote=True)}">
   <meta name="twitter:description" content="{escape(description, quote=True)}">
