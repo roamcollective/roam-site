@@ -499,7 +499,7 @@ def build_home():
       <div class="hero-copy">
         <span class="eyebrow">Roam Prints Studio</span>
         <h1 aria-label="Follow Roam Prints"><span class="hero-word"><span>Follow</span></span><span class="hero-word"><span>Roam Prints.</span></span></h1>
-        <p class="hero-lede">Follow Roam Prints across our social channels.</p>
+        <p class="hero-lede">Follow Roam Prints across our social media.</p>
         <div class="hero-actions"><a class="button" data-magnetic href="#socials">Choose a platform <span aria-hidden="true">↓</span></a><a class="text-link" href="brands.html">For brands</a></div>
       </div>
       <div class="hero-stage" aria-hidden="true">
