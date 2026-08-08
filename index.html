@@ -146,6 +146,7 @@ h1 { max-width: 710px; margin-top: 24px; font: 400 clamp(84px, 12.4vw, 180px)/.7
 /* Contact */
 .contact { position: relative; overflow: hidden; padding: 70px 0 0; background: var(--orange); color: var(--black); }
 .contact::before { content: ""; position: absolute; right: -8vw; top: -23vw; width: min(43vw, 530px); aspect-ratio: 1; border-radius: 50%; border: clamp(28px, 4vw, 62px) solid rgba(247, 244, 238, .28); }
+.contact .eyebrow { color: var(--black); }
 .contact-grid { position: relative; display: flex; align-items: end; justify-content: space-between; gap: 32px; padding-bottom: 72px; }
 .contact h2 { margin-top: 14px; font: 400 clamp(54px, 8.4vw, 100px)/.78 var(--display); letter-spacing: -.025em; text-transform: uppercase; }
 .contact-copy { position: relative; z-index: 1; text-align: right; }
@@ -164,26 +165,52 @@ h1 { max-width: 710px; margin-top: 24px; font: 400 clamp(84px, 12.4vw, 180px)/.7
   .nav { min-height: 70px; }
   .nav-links { gap: 14px; }
   .nav-links a:not(.nav-pill) { display: none; }
-  .hero-main { grid-template-columns: 1fr; gap: 30px; min-height: auto; padding: 66px 0 82px; }
+  .hero { min-height: auto; }
+  .hero-main { grid-template-columns: 1fr; gap: 24px; min-height: auto; padding: 48px 0 60px; }
   h1 { font-size: clamp(78px, 24vw, 130px); }
-  .hero-stage { min-height: 340px; margin-top: -4px; }
-  .orbit { width: min(77vw, 420px); }
+  .hero-lede { margin-top: 26px; line-height: 1.58; }
+  .hero-actions { gap: 16px; margin-top: 26px; }
+  .button, .text-link { min-height: 48px; }
+  .text-link { display: inline-flex; align-items: center; }
+  .hero-meta { gap: 12px 18px; margin-top: 32px; }
+  .hero-stage { min-height: clamp(320px, 84vw, 410px); margin-top: -4px; }
+  .orbit { width: min(84vw, 420px); }
   .scroll-hint { display: none; }
+  .social-section { padding: 72px 0; }
   .section-top { display: block; }
-  .section-top p { margin-top: 26px; }
-  .social-card { min-height: 94px; }
+  .section-top p { margin-top: 20px; }
+  .social-card { min-height: 88px; padding: 14px 16px; }
+  .card-body { min-width: 0; }
+  .social-handle { max-width: 48vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .card-arrow { font-size: 32px; }
+  .contact { padding-top: 50px; }
   .contact-grid { display: block; }
-  .contact-copy { margin-top: 32px; text-align: left; }
+  .contact-grid { padding-bottom: 52px; }
+  .contact-copy { margin-top: 26px; text-align: left; }
+  .email-link { min-height: 52px; }
+  .contact-foot { padding: 18px 0 22px; }
   .contact-foot-inner { flex-direction: column; }
 }
 @media (max-width: 430px) {
+  .shell { width: min(100% - 32px, 650px); }
+  .nav { min-height: 64px; gap: 10px; }
   .brand { font-size: 11px; }
   .brand img { width: 27px; height: 27px; }
-  .nav-pill { padding: 9px 10px; }
-  .hero-meta { gap: 14px; }
-  .hero-stage { min-height: 305px; }
+  .nav-pill { display: inline-flex; align-items: center; min-height: 40px; padding: 9px 10px; }
+  .hero-main { padding: 40px 0 54px; }
+  h1 { font-size: clamp(70px, 22.5vw, 98px); }
+  .hero-meta { gap: 10px 14px; font-size: 9px; }
+  .hero-stage { min-height: 294px; }
   .social-card { gap: 14px; padding: 14px; }
   .service-mark { width: 50px; height: 50px; }
+  .social-name { font-size: clamp(30px, 10vw, 40px); }
+  .contact h2 { font-size: clamp(58px, 16vw, 74px); }
+  .email-link { width: 100%; justify-content: space-between; }
+}
+@media (max-width: 360px) {
+  .brand { gap: 7px; font-size: 9px; }
+  .brand img { width: 24px; height: 24px; }
+  .nav-pill { font-size: 9px !important; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
