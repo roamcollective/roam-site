@@ -25,6 +25,15 @@ SOCIALS = [
     },
     {
         "index": "02",
+        "name": "Art by Roam",
+        "handle": "@artbyroam",
+        "url": "https://www.instagram.com/artbyroam",
+        "mark": "IG",
+        "icon": "assets/social-icons/instagram.json",
+        "description": "Custom art from Art by Roam.",
+    },
+    {
+        "index": "03",
         "name": "TikTok",
         "handle": "@roamprints",
         "url": "https://www.tiktok.com/@roamprints",
@@ -33,7 +42,7 @@ SOCIALS = [
         "description": "Short-form videos and the latest from Roam Prints.",
     },
     {
-        "index": "03",
+        "index": "04",
         "name": "YouTube",
         "handle": "@roamprints",
         "url": "https://www.youtube.com/@roamprints",
@@ -42,7 +51,7 @@ SOCIALS = [
         "description": "Watch more from Roam Prints.",
     },
     {
-        "index": "04",
+        "index": "05",
         "name": "Facebook",
         "handle": "Roam Prints Studio",
         "url": "https://www.facebook.com/Roamprintsstudio/",
