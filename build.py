@@ -448,7 +448,7 @@ def build_home():
   </header>
   <main>
     <section class="social-section" id="socials"><div class="shell">
-      <div class="section-top" data-reveal><div><span class="eyebrow">Find us online</span><h2>Choose<br>your feed.</h2></div><p>Pick a platform to follow Roam Prints.</p></div>
+      <div class="section-top" data-reveal><div><span class="eyebrow">Find us online</span><h2>Follow<br>along.</h2></div><p>Follow us on all platforms.</p></div>
       <div class="social-grid">{cards}</div>
     </div></section>
     <section class="contact" id="contact"><div class="shell contact-grid" data-reveal>
