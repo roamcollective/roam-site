@@ -138,8 +138,6 @@ h1 { max-width: 710px; margin-top: 24px; font: 400 clamp(84px, 12.4vw, 180px)/.7
 .text-link::after { content: ""; position: absolute; right: 0; bottom: 0; left: 0; height: 1px; background: var(--white-dim); transition: background .2s ease, transform .2s ease; transform-origin: left; }
 .text-link:hover { color: var(--orange-hot); }
 .text-link:hover::after { background: var(--orange); transform: scaleX(.45); }
-.hero-meta { display: flex; gap: 21px; flex-wrap: wrap; margin-top: 46px; color: #918b82; font: 500 10px/1.4 var(--mono); letter-spacing: .1em; text-transform: uppercase; opacity: 0; animation: fade-up .65s .68s ease forwards; }
-.hero-meta b { color: var(--white); font-weight: 500; }
 .hero-stage { position: relative; min-height: 550px; display: grid; place-items: center; perspective: 1000px; }
 .orbit { position: relative; width: min(37vw, 490px); aspect-ratio: 1; transform-style: preserve-3d; animation: float 7s ease-in-out infinite; }
 @keyframes float { 50% { transform: translateY(-18px) rotateX(3deg) rotateY(-4deg); } }
@@ -155,9 +153,6 @@ h1 { max-width: 710px; margin-top: 24px; font: 400 clamp(84px, 12.4vw, 180px)/.7
 .thread:nth-child(4) { top: 40%; transform: rotate(65deg) skewX(-17deg); opacity: .2; }
 .logo-core { position: absolute; inset: 13%; overflow: hidden; border-radius: 50%; background: var(--black); box-shadow: 0 26px 60px rgba(0, 0, 0, .76), 0 0 0 1px rgba(255, 90, 30, .4), 0 0 42px rgba(255, 90, 30, .16); transform: rotate(-4deg); }
 .logo-core img { width: 100%; height: 100%; object-fit: cover; }
-.scroll-hint { position: absolute; bottom: 26px; left: 50%; display: flex; align-items: center; gap: 9px; color: #857e74; font: 500 9px/1 var(--mono); letter-spacing: .15em; text-transform: uppercase; transform: translateX(-50%); }
-.scroll-hint::after { content: ""; width: 40px; height: 1px; background: currentColor; animation: nudge 1.5s ease-in-out infinite; }
-@keyframes nudge { 50% { transform: translateX(11px); } }
 
 /* Social hub */
 .social-section { position: relative; padding: clamp(60px, 6vw, 82px) 0; background: var(--black); overflow: hidden; }
@@ -217,10 +212,8 @@ h1 { max-width: 710px; margin-top: 24px; font: 400 clamp(84px, 12.4vw, 180px)/.7
   .hero-actions { gap: 16px; margin-top: 26px; }
   .button, .text-link { min-height: 48px; }
   .text-link { display: inline-flex; align-items: center; }
-  .hero-meta { gap: 12px 18px; margin-top: 32px; }
   .hero-stage { min-height: clamp(320px, 84vw, 410px); margin-top: -4px; }
   .orbit { width: min(84vw, 420px); }
-  .scroll-hint { display: none; }
   .social-section { padding: 58px 0; }
   .section-top { display: block; }
   .section-top p { margin-top: 20px; }
@@ -244,7 +237,6 @@ h1 { max-width: 710px; margin-top: 24px; font: 400 clamp(84px, 12.4vw, 180px)/.7
   .nav-pill { display: inline-flex; align-items: center; min-height: 40px; padding: 9px 10px; }
   .hero-main { padding: 40px 0 54px; }
   h1 { font-size: clamp(70px, 22.5vw, 98px); }
-  .hero-meta { gap: 10px 14px; font-size: 9px; }
   .hero-stage { min-height: 294px; }
   .social-card { gap: 14px; padding: 14px; }
   .service-mark { width: 50px; height: 50px; }
@@ -448,13 +440,11 @@ def build_home():
         <h1 aria-label="Follow Roam Prints"><span class="hero-word"><span>Follow</span></span><span class="hero-word"><span>Roam Prints.</span></span></h1>
         <p class="hero-lede">Follow Roam Prints across our social channels.</p>
         <div class="hero-actions"><a class="button" data-magnetic href="#socials">Choose a platform <span aria-hidden="true">↓</span></a><a class="text-link" href="mailto:{EMAIL}">Partnerships</a></div>
-        <div class="hero-meta"><span><b>Instagram</b></span><span><b>TikTok</b></span><span><b>YouTube</b></span><span><b>Facebook</b></span></div>
       </div>
       <div class="hero-stage" aria-hidden="true">
         <div class="orbit"><span class="thread"></span><span class="thread"></span><span class="thread"></span><span class="thread"></span><div class="logo-core"><img src="assets/hero-logo.png" alt=""></div></div>
       </div>
     </div>
-    <div class="scroll-hint" aria-hidden="true">Choose a feed</div>
   </header>
   <main>
     <section class="social-section" id="socials"><div class="shell">
